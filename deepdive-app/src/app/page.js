@@ -10,10 +10,23 @@ export default function Home() {
 
   return (
     <div
-      className="w-full h-full flex items-center justify-center cursor-pointer bg-gray-600"
+      className="absolute inset-0 flex items-center justify-center cursor-pointer bg-gray-600"
       onClick={handleLogoClick}
+      style={{ 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#262E39'
+      }}
     >
-      <h1 className="text-white text-4xl font-bold select-none">OUTLINE</h1>
+      <h1 
+        className="text-white text-4xl font-bold select-none"
+        style={{ color: 'white' }}
+      >
+        OUTLINE
+      </h1>
     </div>
   )
 }

@@ -23,22 +23,30 @@ html, body {
   }
 }
 
-/* 모바일 최적화 */
-@media (max-width: 440px) {
-  html {
-    font-size: 14px;
-  }
-}
-
+/* 모바일 최적화 - 360px~440px */
 @media (min-width: 360px) and (max-width: 440px) {
-  html {
-    font-size: 16px;
+  .login-title {
+    font-size: 1.875rem; /* 30px */
+  }
+  .login-subtitle {
+    font-size: 1rem; /* 16px */
+  }
+  .login-input, .login-button {
+    font-size: 1rem; /* 16px */
+    padding: 0.75rem 1rem; /* 12px 16px */
   }
 }
 
 /* 360px 이하 최적화 */
 @media (max-width: 360px) {
-  html {
-    font-size: 13px;
+  .login-title {
+    font-size: 1.5rem; /* 24px */
+  }
+  .login-subtitle {
+    font-size: 0.875rem; /* 14px */
+  }
+  .login-input, .login-button {
+    font-size: 0.875rem; /* 14px */
+    padding: 0.625rem 0.875rem; /* 10px 14px */
   }
 }

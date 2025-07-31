@@ -1,5 +1,4 @@
 import './globals.css'
-import { headers } from 'next/headers'
 
 export const metadata = {
   title: 'OUTLINE - 보이지 않던 지역 이슈를 드러내다',
@@ -7,10 +6,6 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
-  const headersList = headers()
-  const pathname = headersList.get('x-pathname') || '/'
-  const isMain = pathname === '/'
-
   return (
     <html lang="ko">
       <head>
@@ -18,8 +13,8 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-sans bg-gray-200 min-h-screen flex items-center justify-center">
-        <div className={`w-full max-w-[440px] min-w-0 h-screen ${isMain ? '' : 'bg-white shadow-2xl rounded-lg'}`}>
+      <body className="font-sans bg-gray-300 min-h-screen">
+        <div className="mx-auto max-w-[440px] min-h-screen bg-white shadow-2xl relative" style={{ boxShadow: '0 0 50px rgba(0, 0, 0, 0.15)' }}>
           {children}
         </div>
       </body>
