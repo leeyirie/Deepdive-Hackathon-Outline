@@ -1,8 +1,10 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import styles from './login.module.scss'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [nickname, setNickname] = useState('')
   const [isFocused, setIsFocused] = useState(false)
 
@@ -11,7 +13,10 @@ export default function LoginPage() {
     if (nickname.trim()) {
       // 로그인 처리 로직
       console.log('닉네임:', nickname)
-      // 여기에 실제 로그인 로직 추가
+      // 여기서 실제로는 로그인 정보를 저장하거나 처리하는 로직이 들어갈 수 있습니다
+      localStorage.setItem('userNickname', nickname.trim())
+      // 홈 페이지로 이동
+      router.push('/home')
     }
   }
 
