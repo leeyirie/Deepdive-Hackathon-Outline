@@ -9,9 +9,11 @@
   margin-bottom: 0;
   border-bottom: 1px solid #e5e7eb;
   transition: all 0.2s;
+  cursor: pointer;
 
   &:hover {
     background-color: #f9fafb;
+    transform: translateY(-1px);
   }
 
   &:last-child {

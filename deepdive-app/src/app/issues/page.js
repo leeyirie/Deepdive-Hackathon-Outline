@@ -31,9 +31,13 @@ export default function IssuesPage() {
         if (response.ok) {
           // 백엔드에서 받은 전체 기사 목록 데이터
           const data = await response.json()
+          console.log('📋 Issues page posts data:', data)
           
           // 최신순으로 정렬 (전체 데이터)
           const sortedData = (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          
+          // 존재하는 모든 게시글 ID들 출력
+          console.log('📋 All available post IDs:', sortedData.map(post => post.id))
           
           setPosts(sortedData) // 전체 기사 목록을 state에 저장
         } else {

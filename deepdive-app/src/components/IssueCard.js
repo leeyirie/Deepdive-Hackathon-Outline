@@ -1,7 +1,9 @@
+import { useRouter } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
 import styles from './IssueCard.module.scss'
 
 export default function IssueCard({ post }) {
+  const router = useRouter()
   // 날짜 포맷 함수
   const formatDate = (dateString) => {
     const date = new Date(dateString)
@@ -16,8 +18,12 @@ export default function IssueCard({ post }) {
     return date.toLocaleDateString('ko-KR')
   }
 
+  const handleClick = () => {
+    router.push(`/issues/${post.id}`)
+  }
+
   return (
-    <div className={styles.issueCard}>
+    <div className={styles.issueCard} onClick={handleClick}>
       <div className={styles.issueContent}>
         <div className={styles.statusTagTop}>
           {/* 백엔드 데이터: post.status (0: 진행중, 1: 해결됨) */}

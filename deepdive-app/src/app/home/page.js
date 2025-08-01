@@ -36,10 +36,14 @@ export default function HomePage() {
           // 백엔드에서 받은 기사 목록 데이터
           // 예상 데이터 구조: [{ id, title, content, imageUrl, likeCount, status, createdAt }]
           const data = await response.json()
+          console.log('🏠 Home posts data:', data)
           
           // 최신순으로 정렬하고 홈에서는 4개만 표시
           const sortedData = (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           const limitedData = sortedData.slice(0, 4)
+          
+          // 존재하는 게시글 ID들 출력
+          console.log('📋 Available post IDs:', limitedData.map(post => post.id))
           
           setPosts(limitedData) // 최신 4개 기사만 state에 저장
         } else {
