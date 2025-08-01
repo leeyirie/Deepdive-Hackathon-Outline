@@ -1,7 +1,7 @@
 .statsContainer {
   padding-bottom: 80px;
   min-height: 100vh;
-  background-color: #F8F9FA;
+  background-color: #f5f5f5;
 }
 
 .header {
@@ -42,174 +42,183 @@
 
 .dateSelector {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 24px;
 
   .dropdown {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 10px 16px;
     background-color: white;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 20px;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: #262E39;
+    position: relative;
+    flex: 1;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
     &:hover {
       border-color: #d1d5db;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     }
   }
 }
 
-.statsCards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 32px;
-}
 
-.statCard {
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   background-color: white;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
 
-  .statLabel {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 8px;
+.dropdownItem {
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  color: #262E39;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f8f9fa;
   }
 
-  .statValue {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #262E39;
+  &:first-child {
+    border-radius: 12px 12px 0 0;
+  }
 
-    .mainNumber {
-      margin-right: 4px;
-    }
-
-    .unit {
-      font-size: 0.875rem;
-      color: #6b7280;
-    }
+  &:last-child {
+    border-radius: 0 0 12px 12px;
   }
 }
+
+
 
 .chartSection {
   background-color: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   .sectionTitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #262E39;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 }
 
+// 바 차트 스타일
+.barChart {
+  .chartBars {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    height: 120px;
+    margin-bottom: 20px;
+    padding: 0 24px;
+  }
+
+  .barContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20px;
+  }
+
+  .barWrapper {
+    height: 80px;
+    display: flex;
+    align-items: end;
+    width: 20px;
+    margin-bottom: 10px;
+  }
+
+  .bar {
+    width: 100%;
+    background-color: #d1d5db;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s ease;
+
+    &.activeBar {
+      background-color: #3b82f6;
+    }
+  }
+
+  .barLabel {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: center;
+    font-weight: 500;
+
+    &.activeLabel {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+  }
+
+  .chartFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-top: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+
+    .chartPeriod {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .chartValue {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #262E39;
+    }
+  }
+}
+
+// 라인 차트 스타일
 .lineChart {
   .chartArea {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    background-color: #fafbfc;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #f1f3f4;
+  }
+
+  .lineChartSvg {
+    width: 100%;
+    height: auto;
   }
 
   .chartLabels {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: #6b7280;
+    padding: 0 16px;
+    font-weight: 500;
   }
 }
 
-.pieChartContainer {
-  .pieChart {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 24px;
-  }
 
-  .legendList {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.875rem;
-
-  .legendColor {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
-
-    &.gyeongsang { background-color: #10b981; }
-    &.gangwon { background-color: #3b82f6; }
-    &.jeonra { background-color: #6366f1; }
-    &.chungcheong { background-color: #ec4899; }
-    &.jeju { background-color: #d1d5db; }
-  }
-
-  .legendLabel {
-    flex: 1;
-    color: #262E39;
-  }
-
-  .legendValue {
-    color: #6b7280;
-  }
-}
-
-.topIssuesSection {
-  background-color: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.issuesList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.issueItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .issueRank {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f3f4f6;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #262E39;
-  }
-
-  .issueTitle {
-    flex: 1;
-    font-size: 0.875rem;
-    color: #262E39;
-  }
-
-  .issueCount {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-}
 
 .bottomNav {
   position: fixed;

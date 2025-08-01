@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 
+// Dynamic route configuration
+export const dynamic = 'force-dynamic'
+
 export async function POST(request) {
   try {
     const body = await request.json()
     
     // 백엔드 API 호출
-    const backendResponse = await fetch('http://13.124.229.252:8080/auth/login', {
+    const backendResponse = await fetch(`${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

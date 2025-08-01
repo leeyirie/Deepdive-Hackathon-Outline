@@ -1,12 +1,60 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
+import IssueCard from '@/components/IssueCard'
+
 import styles from './home.module.scss'
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState('home')
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
+
+
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        // 로그인 시 저장된 사용자 ID를 localStorage에서 가져옴
+        const userId = localStorage.getItem('userId')
+        console.log('🔍 userId from localStorage:', userId) // 디버깅용
+        
+        if (!userId) {
+          console.error('User ID not found')
+          return
+        }
+
+        // Next.js API Route를 통해 백엔드 데이터 요청
+        // 실제 호출: localhost:3000/api/posts → 13.124.229.252:8080/posts
+        const apiUrl = `/api/posts?userId=${userId}&sort=latest`
+        console.log('🔍 API URL:', apiUrl) // 디버깅용
+        
+        const response = await fetch(apiUrl)
+        
+        if (response.ok) {
+          // 백엔드에서 받은 기사 목록 데이터
+          // 예상 데이터 구조: [{ id, title, content, imageUrl, likeCount, status, createdAt }]
+          const data = await response.json()
+          
+          // 최신순으로 정렬하고 홈에서는 4개만 표시
+          const sortedData = (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          const limitedData = sortedData.slice(0, 4)
+          
+          setPosts(limitedData) // 최신 4개 기사만 state에 저장
+        } else {
+          console.error('Failed to fetch posts')
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error)
+      } finally {
+        setLoading(false) // 로딩 상태 종료
+      }
+    }
+
+    fetchPosts() // 컴포넌트 마운트 시 한 번 실행
+  }, [])
 
   return (
     <div className={styles.homeContainer}>
@@ -44,73 +92,53 @@ export default function HomePage() {
 
         {/* 지도 영역 */}
         <div className={styles.mapSection}>
-          <div className={styles.mapContainer}>
+          <div className={styles.mapContainer} onClick={() => router.push('/map')}>
             <div className={styles.mapPlaceholder}>
               <span>카카오맵 API</span>
             </div>
           </div>
         </div>
 
-        {/* 이슈 목록 */}
+                {/* 이슈 목록 */}
         <div className={styles.issuesSection}>
           <div className={styles.sectionHeader}>
-            <h2>제보된 이슈</h2>
-            <button className={styles.moreButton}>더보기</button>
+            <h2>실시간 이슈</h2>
+            <button 
+              className={styles.moreButton}
+              onClick={() => router.push('/issues')}
+            >
+              더보기
+            </button>
           </div>
 
-          {/* 첫 번째 이슈 */}
-          <div className={styles.issueCard}>
-            <div className={styles.issueContent}>
-              <div className={styles.statusTagTop}>
-                                 <span className={`${styles.statusTag} ${styles.inProgress}`}>
-                   <Icon name="ongoing" size={14} />
-                   진행중
-                 </span>
-              </div>
-                             <div className={styles.issueMain}>
-                 <div className={styles.issueText}>
-                   <h3>전북 고창군 산불</h3>
-                   <p className={styles.issueDescription}>
-                     전북 고창군 단수 전북 고창군 단수 전북 고창군 단수 전북 고창군 단수 전북 고창군 단수 전북 고창군 단수 전북 고창군 단수 전북 고창군 단수
-                   </p>
-                   <div className={styles.issueMeta}>
-                     <span>12시간 전</span>
-                     <span>공감수 124</span>
-                   </div>
-                 </div>
-                 <div className={styles.issueImage}>
-                   <div className={styles.imagePlaceholder}>🔥</div>
-                 </div>
-               </div>
+          {loading ? (
+            // API 호출 중일 때 표시
+            <div className={styles.loadingContainer}>
+              <p>이슈를 불러오는 중...</p>
             </div>
-          </div>
-
-          {/* 두 번째 이슈 */}
-          <div className={styles.issueCard}>
-            <div className={styles.issueContent}>
-              <div className={styles.statusTagTop}>
-                                 <span className={`${styles.statusTag} ${styles.resolved}`}>
-                   <Icon name="resolve" size={14} />
-                   해결됨
-                 </span>
+          ) : posts.length > 0 ? (
+            <>
+              {/* 백엔드에서 받은 기사 데이터를 IssueCard 컴포넌트로 렌더링 (최신 4개) */}
+              {posts.map((post) => (
+                <IssueCard key={post.id} post={post} />
+              ))}
+              
+              {/* 하단 더보기 버튼 */}
+              <div className={styles.moreButtonContainer}>
+                <button 
+                  className={styles.moreButtonFull}
+                  onClick={() => router.push('/issues')}
+                >
+                  더 많은 이슈 보기
+                </button>
               </div>
-              <div className={styles.issueMain}>
-                <div className={styles.issueText}>
-                  <h3>전북 고창군 단수</h3>
-                  <p className={styles.issueDescription}>
-                    전북 고창군 단수 문제가 해결되었습니다. 지역 주민들의 협조로 정상적인 물 공급이 재개되었습니다.
-                  </p>
-                  <div className={styles.issueMeta}>
-                    <span>1일 전</span>
-                    <span>공감수 89</span>
-                  </div>
-                </div>
-                <div className={styles.issueImage}>
-                  <div className={styles.imagePlaceholder}>💧</div>
-                </div>
-              </div>
+            </>
+          ) : (
+            // 데이터가 없을 때 표시
+            <div className={styles.emptyContainer}>
+              <p>아직 제보된 이슈가 없습니다.</p>
             </div>
-          </div>
+          )}
         </div>
       </main>
 
