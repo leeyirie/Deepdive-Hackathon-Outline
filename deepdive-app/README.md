@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OUTLINE
 
-## Getting Started
+> **"보이지 않던 지역 이슈를 드러내다"**
 
-First, run the development server:
+지역 정보 45% 블라인드존을 5분 내 감지·요약·확산하는 실시간 플랫폼
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌐 서비스 접속
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**🔗 [OUTLINE 바로가기](https://deepdive-hackathon-outline.vercel.app/)**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 프로젝트 개요
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 문제 정의
+- **정보 가시성 부족**: 수도권 중심 언론으로 인한 지역 이슈 정보 블라인드존 (45%)
+- **보고 체계 지연**: 지역 재난·사건이 기관에 도달하기까지 평균 6시간 지체
+- **참여–행동 단절**: 수도권 20‧30대의 지역 문제 공감은 있으나 참여 채널 부족
 
-## Learn More
+### 솔루션
+OUTLINE은 **자동 감지 → AI 요약 → 카드뉴스 시각화 → 기관 전달**까지 연결하는 **시민 참여형 End-to-End 지역 이슈 확산 솔루션**입니다.
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 주요 기능
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 핵심 기능
+- **지역 이슈 자동 수집**: 커뮤니티, SNS, 뉴스 RSS 등 600+ 채널 실시간 크롤링
+- **AI 기반 요약**: GPT-3.5 Turbo로 긴 게시글을 3줄로 요약
+- **지도 기반 시각화**: 감지된 이슈를 지도에 시각화하여 위치·심각도 정보 제공
+- **공감 시스템**: 유저가 이슈에 공감하고, 공감 수에 따라 이슈 랭킹 결정
+- **기관 알림 연계**: 공감 수 100 이상 시 지자체나 언론사에 자동 전달
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 기술 스택
+| 분야 | 기술 |
+|------|------|
+| **Frontend** | Next.js, React, SCSS |
+| **Backend** | Spring Boot |
+| **Database** | MySQL |
+| **AI** | OpenAI GPT-3.5 Turbo |
+| **지도** | Naver Map API |
+| **배포** | Vercel |
+| **크롤링** | Selenium, BeautifulSoup, RSS API |
 
-## Deploy on Vercel
+## 📱 서비스 화면
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 주요 화면 구성
+- **홈**: 지역별 이슈 카드 탐색 (최신순/공감순/지역별 필터링)
+- **이슈 상세**: 요약 텍스트, 대표 이미지, 위치 지도 표시
+- **지도**: 감지된 이슈를 지도에 시각화
+- **통계**: 이슈 발생 추세 및 분석 데이터
+- **내정보**: 사용자 프로필 및 설정
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 디자인 키워드
+- **Clarity**: 정보가 빠르고 명확하게 읽히는 구조
+- **Structure**: 정보 단위를 구분해 흐름과 계층이 보이는 UI
+- **Neutrality**: 중립적이고 팩트 중심의 컬러 전략
+- **Legibility**: 타이포 위계로 정확히 읽히는 정보 흐름
+- **Composure**: 감정이 덜 묻고 객관적으로 보이는 뉴스 UI
+
+## 🎯 타겟 사용자
+
+### 주요 타겟
+- **도시 거주 MZ 세대 (20-39세)**: 지역 이슈에 공감하지만 참여 도구 부족
+- **비수도권 주민 (30-50대)**: 현장에서 직접 제보하는 콘텐츠 제공자
+- **지자체·재난 담당자**: 대시보드 기반 정보 수신 및 신속 대응
+
+## 📊 KPI 목표
+
+| KPI 항목 | 목표 수치 |
+|----------|-----------|
+| **월간 이슈 카드 생성 수** | ≥ 300건 |
+| **이슈당 평균 공감 수** | ≥ 15회 |
+| **월간 SNS 공유 횟수** | ≥ 1,000건 |
+| **주간 기관 알림 건수** | ≥ 2건/주 |
+
+## 🏆 기대 효과
+
+### 사용자 관점
+- 지역 이슈를 5분 내 카드로 파악 → 정보 탐색 불편 해소
+- 공감·SNS 공유로 참여 장벽 감소
+- 기관 대응·해결 알림 회신으로 행동 변화 경험
+
+### 사회적 관점
+- 수도권 중심 노출 구조 개선 → 정보 격차 완화
+- 공감 임계치 즉시 알림 → 대응 지연 6시간 → 30분 (-92%)
+- 시민·언론·기관 3각 협력 체계 정착
+
+## 👥 팀 정보
+
+| 이름 | 역할 | 담당 업무 |
+|------|------|-----------|
+| 염상우 | 팀장 | 기획 및 크롤링 시스템 구현 |
+| 임병준 | 기획 | 전체 기획 및 AI요약 시스템 구현 |
+| 이소연 | 프론트엔드 | 웹 화면 구현, 공통 컴포넌트 개발, 백엔드 API 연동 |
+| 김태희 | 백엔드 | API 서버 개발, DB 설계 및 데이터 처리 |
+| 박요한 | 디자이너 | UI/UX 디자인 |
+| 서유진 | 디자이너 | UI/UX 디자인 |
+
+## 🔧 환경 설정
+
+필요한 환경 변수:
+- `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID`: 네이버 지도 API 키
+- 기타 API 키들...
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+
+---
+
+**지역균형발전이란, 도시에서 무언가를 해주는 것이 아니라 같은 무게로 주목하고, 연결되고, 반응하는 것입니다.**
+
+OUTLINE은 그것을 **기술적으로, 비대면으로, 일상에서 실현**합니다.
