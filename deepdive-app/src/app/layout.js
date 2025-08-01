@@ -16,9 +16,9 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-sans bg-gray-300 min-h-screen">
-        {/* 네이버 지도 API 전역 미리 로드 (이벤트 핸들러 없이) */}
+        {/* 네이버 지도 API 전역 미리 로드 */}
         <Script
-          src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=48054bm8uv"
+          src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || '48054bm8uv'}`}
           strategy="afterInteractive"
         />
         
@@ -42,6 +42,7 @@ export default function RootLayout({ children }) {
                   clearInterval(window.naverMapCheckInterval);
                   if (!window.naverMapPreloaded) {
                     console.log('❌ 전역 지도 API 미리 로드 실패 - 타임아웃');
+                    console.error('🔍 API 키:', '${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || '48054bm8uv'}');
                   }
                 }
               }, 10000);

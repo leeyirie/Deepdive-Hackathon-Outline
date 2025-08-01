@@ -297,14 +297,18 @@ export default function MapPage() {
     // 네이버 지도 API 인증 실패 처리 함수
     window.navermap_authFailure = function () {
       console.error('🚫 네이버 지도 API 인증 실패!')
-      console.error('클라이언트 ID:', '48054bm8uv')
-      console.error('현재 URL:', window.location.href)
-      console.error('해결 방법:')
-      console.error('1. 네이버 클라우드 플랫폼에서 서비스 URL 설정 확인')
-      console.error('2. API 키가 올바른지 확인')
-      console.error('3. Web Dynamic Map 서비스 활성화 확인')
+      console.error('🔍 디버깅 정보:')
+      console.error('1. 클라이언트 ID:', process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || '48054bm8uv')
+      console.error('2. 현재 URL:', window.location.href)
+      console.error('3. 환경변수 확인:', process.env.NODE_ENV)
+      console.error('4. 해결 방법:')
+      console.error('   - 네이버 클라우드 플랫폼에서 서비스 URL 설정 확인')
+      console.error('   - API 키가 올바른지 확인')
+      console.error('   - Web Dynamic Map 서비스 활성화 확인')
+      console.error('   - 현재 도메인이 등록되어 있는지 확인')
       
-      alert('네이버 지도 API 인증에 실패했습니다.\n서비스 URL 설정을 확인해주세요.')
+      // 사용자에게 친화적인 에러 메시지 표시
+      alert('네이버 지도 API 인증에 실패했습니다.\n\n해결 방법:\n1. 네이버 클라우드 플랫폼에서 서비스 URL 설정 확인\n2. API 키가 올바른지 확인\n3. Web Dynamic Map 서비스 활성화 확인\n4. 현재 도메인이 등록되어 있는지 확인')
     }
 
     // 컴포넌트 언마운트 시 정리
@@ -320,7 +324,7 @@ export default function MapPage() {
       {/* 전역 로딩이 실패한 경우 백업 스크립트 로드 */}
       {needBackupScript && (
         <Script
-          src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=48054bm8uv&callback=initNaverMap"
+          src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || '48054bm8uv'}&callback=initNaverMap`}
           strategy="beforeInteractive"
           onLoad={() => {
             console.log('✅ 백업 스크립트로 네이버 지도 API 로드 완료')
@@ -329,10 +333,18 @@ export default function MapPage() {
           }}
           onError={(error) => {
             console.error('❌ 백업 스크립트 로드 실패:', error)
-            console.error('가능한 원인:')
-            console.error('1. API 키 인증 실패')
-            console.error('2. 서비스 URL 미설정')
-            console.error('3. Web Dynamic Map 서비스 미활성화')
+            console.error('🔍 디버깅 정보:')
+            console.error('1. API 키:', process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || '48054bm8uv')
+            console.error('2. 현재 URL:', window.location.href)
+            console.error('3. 환경변수 확인:', process.env.NODE_ENV)
+            console.error('4. 가능한 원인:')
+            console.error('   - API 키 인증 실패')
+            console.error('   - 서비스 URL 미설정')
+            console.error('   - Web Dynamic Map 서비스 미활성화')
+            console.error('   - 도메인 등록 필요')
+            
+            // 사용자에게 친화적인 에러 메시지 표시
+            alert('네이버 지도 API 로드에 실패했습니다.\n\n해결 방법:\n1. 네이버 클라우드 플랫폼에서 서비스 URL 설정 확인\n2. API 키가 올바른지 확인\n3. Web Dynamic Map 서비스 활성화 확인\n4. 현재 도메인이 등록되어 있는지 확인')
           }}
         />
       )}
