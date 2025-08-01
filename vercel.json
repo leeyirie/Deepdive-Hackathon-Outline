@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd deepdive-app && npm run build",
+  "outputDirectory": "deepdive-app/.next",
+  "installCommand": "cd deepdive-app && npm install",
+  "devCommand": "cd deepdive-app && npm run dev",
+  "framework": "nextjs"
+}
