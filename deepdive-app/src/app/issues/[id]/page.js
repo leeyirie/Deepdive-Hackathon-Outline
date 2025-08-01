@@ -17,6 +17,8 @@ export default function IssueDetailPage() {
   const [error, setError] = useState(null)
   const [aiSummary, setAiSummary] = useState('')
   const [aiSummaryLoading, setAiSummaryLoading] = useState(false)
+  const [likeCount, setLikeCount] = useState(0)
+  const [isLikeLoading, setIsLikeLoading] = useState(false)
 
   // AI 요약 생성 함수
   const fetchAiSummary = async (issueData) => {
@@ -79,6 +81,7 @@ export default function IssueDetailPage() {
           
           setIssue(data)
           setIsLiked(data.liked || false)
+          setLikeCount(data.likeCount || 0)
           
           // 상태가 'SOLVED'이면 해결됨으로 표시
           setIsSolved(data.status === 'SOLVED')
@@ -132,12 +135,51 @@ export default function IssueDetailPage() {
   }, [params.id])
 
   const handleLike = async () => {
-    // TODO: API 호출로 좋아요 처리
-    setIsLiked(!isLiked)
+    const userId = localStorage.getItem('userId')
+    if (!userId) {
+      alert('로그인이 필요합니다.')
+      return
+    }
+
+    if (isLikeLoading) return // 중복 클릭 방지
+
+    setIsLikeLoading(true)
     
-    // 햅틱 피드백 (모바일)
-    if (navigator.vibrate) {
-      navigator.vibrate(50)
+    try {
+      // 🔥 공감해요 토글 로직: 현재 상태에 따라 POST/DELETE 선택
+      const method = isLiked ? 'DELETE' : 'POST' // isLiked가 true면 DELETE, false면 POST
+      console.log('🔥 공감해요 토글:', { isLiked, method, userId, postId: params.id })
+      
+      const response = await fetch('/api/likes', {
+        method, // 🔥 첫 번째 클릭: POST 요청, 두 번째 클릭: DELETE 요청
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: parseInt(userId),
+          postId: parseInt(params.id)
+        }),
+      })
+
+      if (response.ok) {
+        // 🔥 성공 시 UI 상태 업데이트
+        setIsLiked(!isLiked) // 공감해요 상태 토글
+        setLikeCount(prev => isLiked ? prev - 1 : prev + 1) // 카운트 업데이트
+        console.log('✅ 공감해요 토글 성공:', { newIsLiked: !isLiked, newCount: isLiked ? likeCount - 1 : likeCount + 1 })
+        
+        // 햅틱 피드백 (모바일)
+        if (navigator.vibrate) {
+          navigator.vibrate(50)
+        }
+      } else {
+        console.error('Failed to toggle like')
+        alert('공감해요 처리에 실패했습니다.')
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error)
+      alert('네트워크 오류가 발생했습니다.')
+    } finally {
+      setIsLikeLoading(false)
     }
   }
 
@@ -328,7 +370,7 @@ export default function IssueDetailPage() {
 
         {/* AI 요약 공감 통계 (바깥쪽) */}
         <section className={styles.aiStats}>
-          123명이 공감했어요
+          {likeCount}명이 공감했어요
         </section>
 
         {/* 액션 버튼 */}
@@ -336,11 +378,12 @@ export default function IssueDetailPage() {
           <button 
             className={`${styles.actionBtn} ${styles.likeBtn} ${isLiked ? styles.liked : ''}`}
             onClick={handleLike}
+            disabled={isLikeLoading}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M4 14C4 12.25 4.41667 10.6917 5.25 9.325C6.08333 7.95833 7 6.80833 8 5.875C9 4.94167 9.91667 4.22917 10.75 3.7375L12 3V6.3C12 6.91667 12.2083 7.40417 12.625 7.7625C13.0417 8.12083 13.5083 8.3 14.025 8.3C14.3083 8.3 14.5792 8.24167 14.8375 8.125C15.0958 8.00833 15.3333 7.81667 15.55 7.55L16 7C17.2 7.7 18.1667 8.67083 18.9 9.9125C19.6333 11.1542 20 12.5167 20 14C20 15.4667 19.6417 16.8042 18.925 18.0125C18.2083 19.2208 17.2667 20.175 16.1 20.875C16.3833 20.475 16.6042 20.0375 16.7625 19.5625C16.9208 19.0875 17 18.5833 17 18.05C17 17.3833 16.875 16.7542 16.625 16.1625C16.375 15.5708 16.0167 15.0417 15.55 14.575L12 11.1L8.475 14.575C7.99167 15.0583 7.625 15.5917 7.375 16.175C7.125 16.7583 7 17.3833 7 18.05C7 18.5833 7.07917 19.0875 7.2375 19.5625C7.39583 20.0375 7.61667 20.475 7.9 20.875C6.73333 20.175 5.79167 19.2208 5.075 18.0125C4.35833 16.8042 4 15.4667 4 14ZM12 13.9L14.125 15.975C14.4083 16.2583 14.625 16.575 14.775 16.925C14.925 17.275 15 17.65 15 18.05C15 18.8667 14.7083 19.5625 14.125 20.1375C13.5417 20.7125 12.8333 21 12 21C11.1667 21 10.4583 20.7125 9.875 20.1375C9.29167 19.5625 9 18.8667 9 18.05C9 17.6667 9.075 17.2958 9.225 16.9375C9.375 16.5792 9.59167 16.2583 9.875 15.975L12 13.9Z" fill="currentColor"/>
             </svg>
-            <span>공감해요</span>
+            <span>{isLikeLoading ? '처리중...' : '공감해요'}</span>
           </button>
           <button 
             className={`${styles.actionBtn} ${styles.solveBtn} ${isSolved ? styles.solved : ''}`}
