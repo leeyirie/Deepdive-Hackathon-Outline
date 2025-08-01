@@ -44,10 +44,15 @@
   color: #6b7280;
   border-radius: 8px;
   transition: all 0.2s;
+  outline: none;
 
   &:hover {
     background-color: #f3f4f6;
     color: #374151;
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
@@ -94,6 +99,9 @@
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   scroll-behavior: smooth;
+  /* 터치 이벤트 최적화 */
+  -webkit-touch-action: pan-y;
+  touch-action: pan-y;
 }
 
 // 전국 이슈 섹션
@@ -211,10 +219,15 @@
   padding: 4px 8px;
   border-radius: 4px;
   transition: all 0.2s;
+  outline: none;
 
   &:hover {
     background-color: #f3f4f6;
     color: #374151;
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
@@ -368,6 +381,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  outline: none;
 
   &:hover {
     background-color: #e9ecef;
@@ -377,6 +391,10 @@
 
   &:active {
     transform: translateY(1px);
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
@@ -414,6 +432,7 @@
   transition: all 0.2s;
   font-size: 0.875rem;
   font-weight: 500;
+  outline: none;
 
   &:hover {
     color: #6b7280;
@@ -421,6 +440,10 @@
 
   &.active {
     color: #262E39;
+  }
+  
+  &:focus {
+    outline: none;
   }
 
   img {
@@ -503,6 +526,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  outline: none;
 
   &:hover {
     color: #3182ce;
@@ -511,6 +535,10 @@
 
   &:active {
     transform: scale(0.98);
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 

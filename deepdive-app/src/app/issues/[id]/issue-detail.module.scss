@@ -111,6 +111,7 @@
   border-radius: 6px;
   color: #333;
   transition: all 0.2s ease;
+  outline: none;
   
   &:hover {
     transform: scale(1.05);
@@ -118,6 +119,10 @@
   
   &:active {
     transform: scale(0.95);
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
@@ -262,9 +267,14 @@
   color: #666;
   cursor: pointer;
   transition: all 0.2s ease;
+  outline: none;
   
   &:hover {
     background-color: #e9ecef;
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
@@ -320,6 +330,7 @@
     font-size: 14px;
     background-color: #f8f9fa;
     box-sizing: border-box;
+    outline: none;
     
     &::placeholder {
       color: #999;
@@ -394,9 +405,14 @@
   cursor: pointer;
   margin-top: 16px;
   transition: background-color 0.2s ease;
+  outline: none;
   
   &:hover {
     background-color: #f8f9fa;
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
@@ -482,9 +498,14 @@
   cursor: pointer;
   margin-top: 16px;
   transition: background-color 0.2s ease;
+  outline: none;
   
   &:hover {
     background-color: #f8f9fa;
+  }
+  
+  &:focus {
+    outline: none;
   }
 }
 
