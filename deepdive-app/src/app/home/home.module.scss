@@ -1,9 +1,11 @@
 .homeContainer {
+  width: 100%;
   height: 100vh;
   background-color: white;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 // 상단 네비게이션
@@ -269,12 +271,11 @@
 
 // 하단 네비게이션
 .bottomNav {
-  position: fixed;
+  position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   width: 100%;
-  max-width: 440px;
   display: flex;
   background-color: white;
   border-top: 1px solid #e5e7eb;

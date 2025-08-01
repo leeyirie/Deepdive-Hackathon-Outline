@@ -10,20 +10,27 @@ export default function Home() {
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center cursor-pointer bg-gray-600"
+      className="cursor-pointer"
       onClick={handleLogoClick}
       style={{ 
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: '#262E39'
+        position: 'relative',
+        width: '100%',
+        height: '100vh',
+        backgroundColor: '#262E39',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}
     >
       <h1 
-        className="text-white text-4xl font-bold select-none"
-        style={{ color: 'white' }}
+        className="select-none"
+        style={{ 
+          color: 'white',
+          fontSize: '2.25rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          margin: 0
+        }}
       >
         OUTLINE
       </h1>
