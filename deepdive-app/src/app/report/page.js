@@ -140,7 +140,8 @@ export default function ReportPage() {
         locationCode: formData.locationCode,
         latitude: formData.latitude,
         longitude: formData.longitude,
-        status: 0 // 기본 상태
+        status: 0, // 기본 상태
+        createdAt: new Date().toISOString() // 현재 시간 자동 추가
       }
 
       console.log('📤 제보 등록 요청:', requestData)
