@@ -8,49 +8,88 @@ import styles from './issues.module.scss'
 export default function IssuesPage() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('latest') // 'latest' | 'likes'
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    const fetchAllPosts = async () => {
-      try {
-        // 로그인 시 저장된 사용자 ID를 localStorage에서 가져옴
-        const userId = localStorage.getItem('userId')
-        console.log('🔍 userId from localStorage:', userId) // 디버깅용
-        
-        if (!userId) {
-          console.error('User ID not found')
-          return
-        }
-
-        // Next.js API Route를 통해 모든 백엔드 데이터 요청
-        const apiUrl = `/api/posts?userId=${userId}&sort=latest`
-        console.log('🔍 API URL:', apiUrl) // 디버깅용
-        
-        const response = await fetch(apiUrl)
-        
-        if (response.ok) {
-          // 백엔드에서 받은 전체 기사 목록 데이터
-          const data = await response.json()
-          console.log('📋 Issues page posts data:', data)
-          
-          // 최신순으로 정렬 (전체 데이터)
-          const sortedData = (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          
-          // 존재하는 모든 게시글 ID들 출력
-          console.log('📋 All available post IDs:', sortedData.map(post => post.id))
-          
-          setPosts(sortedData) // 전체 기사 목록을 state에 저장
-        } else {
-          console.error('Failed to fetch posts')
-        }
-      } catch (error) {
-        console.error('Error fetching posts:', error)
-      } finally {
-        setLoading(false) // 로딩 상태 종료
+  // 포스트 데이터 가져오기 함수
+  const fetchPosts = async (tabType = activeTab, pageNum = 1, append = false) => {
+    try {
+      if (!append) setLoading(true)
+      else setLoadingMore(true)
+      
+      const userId = localStorage.getItem('userId')
+      console.log('🔍 userId from localStorage:', userId)
+      
+      if (!userId) {
+        console.error('User ID not found')
+        return
       }
-    }
 
-    fetchAllPosts() // 컴포넌트 마운트 시 한 번 실행
+      // 정렬 기준에 따른 API 호출
+      const sortParam = tabType === 'likes' ? 'likes' : 'latest'
+      const apiUrl = `/api/posts?userId=${userId}&sort=${sortParam}&page=${pageNum}&limit=10`
+      console.log('🔍 API URL:', apiUrl)
+      
+      const response = await fetch(apiUrl)
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log('📋 Issues page posts data:', data)
+        
+        // 데이터 정렬
+        const sortedData = (data || []).sort((a, b) => {
+          if (tabType === 'likes') {
+            return (b.likeCount || 0) - (a.likeCount || 0)
+          }
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        })
+        
+        console.log('📋 Available post IDs:', sortedData.map(post => post.id))
+        
+        if (append) {
+          setPosts(prev => [...prev, ...sortedData])
+        } else {
+          setPosts(sortedData)
+        }
+        
+        // 더 가져올 데이터가 있는지 확인 (10개 미만이면 더 이상 없음)
+        setHasMore(sortedData.length >= 10)
+        
+      } else {
+        console.error('Failed to fetch posts')
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error)
+    } finally {
+      setLoading(false)
+      setLoadingMore(false)
+    }
+  }
+
+  // 탭 변경 함수
+  const handleTabChange = (tabType) => {
+    if (tabType === activeTab) return
+    
+    setActiveTab(tabType)
+    setPage(1)
+    setHasMore(true)
+    fetchPosts(tabType, 1, false)
+  }
+
+  // 더보기 함수
+  const handleLoadMore = () => {
+    if (loadingMore || !hasMore) return
+    
+    const nextPage = page + 1
+    setPage(nextPage)
+    fetchPosts(activeTab, nextPage, true)
+  }
+
+  useEffect(() => {
+    fetchPosts('latest', 1, false)
   }, [])
 
   return (
@@ -63,9 +102,25 @@ export default function IssuesPage() {
         >
           <Icon name="arrow-left" size={24} />
         </button>
-        <h1 className={styles.title}>실시간간 이슈</h1>
+        <h1 className={styles.title}>실시간 이슈</h1>
         <div className={styles.headerSpacer}></div>
       </header>
+
+      {/* 탭 메뉴 */}
+      <div className={styles.tabContainer}>
+        <button 
+          className={`${styles.tab} ${activeTab === 'latest' ? styles.activeTab : ''}`}
+          onClick={() => handleTabChange('latest')}
+        >
+          최신순
+        </button>
+        <button 
+          className={`${styles.tab} ${activeTab === 'likes' ? styles.activeTab : ''}`}
+          onClick={() => handleTabChange('likes')}
+        >
+          공감순
+        </button>
+      </div>
 
       {/* 이슈 목록 */}
       <main className={styles.mainContent}>
@@ -76,11 +131,33 @@ export default function IssuesPage() {
           </div>
         ) : posts.length > 0 ? (
           // 백엔드에서 받은 전체 기사 데이터를 IssueCard 컴포넌트로 렌더링
-          <div className={styles.issuesList}>
-            {posts.map((post) => (
-              <IssueCard key={post.id} post={post} />
-            ))}
-          </div>
+          <>
+            <div className={styles.issuesList}>
+              {posts.map((post) => (
+                <IssueCard key={post.id} post={post} />
+              ))}
+            </div>
+            
+            {/* 더보기 버튼 */}
+            {hasMore && (
+              <div className={styles.loadMoreContainer}>
+                <button 
+                  className={styles.loadMoreButton}
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? (
+                    <>
+                      <div className={styles.loadingSpinner}></div>
+                      <span>불러오는 중...</span>
+                    </>
+                  ) : (
+                    '더보기'
+                  )}
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           // 데이터가 없을 때 표시
           <div className={styles.emptyContainer}>

@@ -15,6 +15,46 @@ export default function IssueDetailPage() {
   const [isLiked, setIsLiked] = useState(false)
   const [isSolved, setIsSolved] = useState(false)
   const [error, setError] = useState(null)
+  const [aiSummary, setAiSummary] = useState('')
+  const [aiSummaryLoading, setAiSummaryLoading] = useState(false)
+
+  // AI 요약 생성 함수
+  const fetchAiSummary = async (issueData) => {
+    if (!issueData?.content) return
+    
+    try {
+      setAiSummaryLoading(true)
+      console.log('🤖 AI 요약 생성 요청 중...')
+      
+      const response = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: issueData.title,
+          content: issueData.content
+        })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setAiSummary(data.summary)
+        console.log('✅ AI 요약 생성 완료:', data.summary)
+        
+        if (data.warning) {
+          console.warn('⚠️', data.warning)
+        }
+      } else {
+        throw new Error(`AI 요약 생성 실패: ${response.status}`)
+      }
+    } catch (error) {
+      console.error('❌ AI 요약 생성 오류:', error)
+      setAiSummary('AI 요약을 생성하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.')
+    } finally {
+      setAiSummaryLoading(false)
+    }
+  }
 
   useEffect(() => {
     const fetchIssueDetail = async () => {
@@ -43,7 +83,9 @@ export default function IssueDetailPage() {
           // 상태가 'SOLVED'이면 해결됨으로 표시
           setIsSolved(data.status === 'SOLVED')
           
-  
+          // AI 요약 생성
+          fetchAiSummary(data)
+        
         } else {
           const errorText = await response.text()
           console.error('❌ Failed to fetch issue detail:', {
@@ -267,10 +309,20 @@ export default function IssueDetailPage() {
           <div className={styles.aiHeader}>
             <Icon name="ai" size={20} />
             <span>AI 요약</span>
+            {aiSummaryLoading && (
+              <div className={styles.aiLoadingSpinner}></div>
+            )}
           </div>
           <p className={styles.aiContent}>
-            고창군 전역에서 기록적인 폭우로 인해 하천 범람과 주택 침수 피해가 이어지고 있습니다. 
-            일부 지역은 이틀째 전기·수도 공급이 중단된 상태입니다.
+            {aiSummaryLoading ? (
+              <span className={styles.aiLoadingText}>
+                AI가 이슈 내용을 분석하여 요약을 생성하고 있습니다...
+              </span>
+            ) : aiSummary ? (
+              aiSummary
+            ) : (
+              '이슈 내용을 분석 중입니다. 잠시만 기다려주세요.'
+            )}
           </p>
         </section>
 

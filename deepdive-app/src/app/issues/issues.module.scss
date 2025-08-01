@@ -45,6 +45,46 @@
   width: 40px; // backButton과 같은 크기로 중앙 정렬
 }
 
+// 탭 컨테이너
+.tabContainer {
+  display: flex;
+  background-color: white;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 0 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #9ca3af;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #374151;
+  }
+  
+  &.activeTab {
+    color: #1f2937;
+    font-weight: 600;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #242426;
+    }
+  }
+}
+
 // 메인 콘텐츠
 .mainContent {
   flex: 1;
@@ -54,6 +94,53 @@
 
 .issuesList {
   padding-bottom: 20px;
+}
+
+// 더보기 버튼
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.loadMoreButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+  }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.loadingSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e9ecef;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 // 로딩 및 빈 상태

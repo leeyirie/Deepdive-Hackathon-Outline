@@ -203,6 +203,26 @@
   }
 }
 
+.aiLoadingSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e9ecef;
+  border-top: 2px solid #4285f4;
+  border-radius: 50%;
+  animation: aiSpin 1s linear infinite;
+  margin-left: auto;
+}
+
+@keyframes aiSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.aiLoadingText {
+  color: #666;
+  font-style: italic;
+}
+
 .aiContent {
   font-size: 14px;
   line-height: 1.6;
