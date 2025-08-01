@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
+import IssueCard from '@/components/IssueCard'
+import { fetchNearbyIssues } from '@/lib/services/issues'
 import styles from './map.module.scss'
 
 export default function MapPage() {
@@ -10,47 +12,137 @@ export default function MapPage() {
   const router = useRouter()
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [needBackupScript, setNeedBackupScript] = useState(false)
+  const [issues, setIssues] = useState([])
+  const [allIssues, setAllIssues] = useState([]) // 전체 이슈 목록
+  const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false)
+  const [isLoadingIssues, setIsLoadingIssues] = useState(true)
+  const [currentLocation, setCurrentLocation] = useState(null)
+  const [markers, setMarkers] = useState([])
+  const [currentZoom, setCurrentZoom] = useState(12)
+
+  // 이슈 데이터 가져오기
+  const loadNearbyIssues = async (lat, lng) => {
+    try {
+      setIsLoadingIssues(true)
+      const issuesData = await fetchNearbyIssues(lat, lng)
+      setAllIssues(issuesData) // 전체 이슈 목록 저장
+      setIssues(issuesData) // 초기에는 모든 이슈 표시
+      setIsLoadingIssues(false)
+      return issuesData
+    } catch (error) {
+      console.error('이슈 데이터 가져오기 실패:', error)
+      setIsLoadingIssues(false)
+      return []
+    }
+  }
+
+  // 지도에 이슈 마커 추가
+  const addIssueMarkers = (issues) => {
+    if (!naverMap.current || !window.naver) return
+
+    // 기존 마커들 제거
+    markers.forEach(marker => marker.setMap(null))
+    const newMarkers = []
+
+    issues.forEach(issue => {
+      // API에서 받은 실제 위치 데이터 사용
+      const position = new window.naver.maps.LatLng(
+        parseFloat(issue.latitude) || parseFloat(issue.lat) || 37.5665, 
+        parseFloat(issue.longitude) || parseFloat(issue.lng) || 126.9780
+      )
+      
+      // 네이버 맵 기본 마커 사용
+      const marker = new window.naver.maps.Marker({
+        position: position,
+        map: naverMap.current,
+        title: issue.title
+      })
+
+      // 마커 클릭 이벤트 - 해당 지역 이슈들을 바텀시트에 표시
+      window.naver.maps.Event.addListener(marker, 'click', () => {
+        // 클릭한 마커 주변의 이슈들을 필터링하여 바텀시트에 표시 (반경 0.005도 = 약 500m)
+        const clickedIssues = allIssues.filter(i => {
+          const issueLat = parseFloat(i.latitude || i.lat)
+          const issueLng = parseFloat(i.longitude || i.lng)
+          const markerLat = parseFloat(issue.latitude || issue.lat)
+          const markerLng = parseFloat(issue.longitude || issue.lng)
+          
+          return Math.abs(issueLat - markerLat) < 0.005 &&
+                 Math.abs(issueLng - markerLng) < 0.005
+        })
+        
+        console.log(`마커 클릭: ${issue.title}, 주변 이슈 ${clickedIssues.length}개 발견`)
+        setIssues(clickedIssues)
+        setIsBottomSheetExpanded(true)
+      })
+
+      newMarkers.push(marker)
+    })
+
+    setMarkers(newMarkers)
+    
+    // 현재 줌 레벨에 따라 마커 가시성 설정
+    if (naverMap.current) {
+      const currentZoomLevel = naverMap.current.getZoom()
+      newMarkers.forEach(marker => {
+        if (currentZoomLevel >= 8) {
+          marker.setVisible(true)
+        } else {
+          marker.setVisible(false)
+        }
+      })
+    }
+  }
+
+  // 줌 레벨에 따른 마커 가시성 업데이트
+  const updateMarkersVisibility = (zoom) => {
+    markers.forEach(marker => {
+      if (zoom >= 8) {
+        // 줌 레벨이 8 이상일 때 마커 표시 (더 관대하게)
+        marker.setVisible(true)
+      } else {
+        // 줌 레벨이 8 미만일 때 마커 숨김
+        marker.setVisible(false)
+      }
+    })
+  }
 
   const initializeMap = () => {
     console.log('🗺️ 지도 초기화 시작')
     
-    // 네이버 지도 초기화
     if (window.naver && window.naver.maps && mapRef.current) {
       try {
         console.log('🗺️ 지도 생성 시작 - 고속 모드')
         
-        // 최고 성능을 위한 초경량 지도 옵션
         const mapOptions = {
-          center: new window.naver.maps.LatLng(37.5665, 126.9780), // 서울 시청 좌표
-          zoom: 12,
-          // 모든 컨트롤 비활성화로 최대 속도
+          center: new window.naver.maps.LatLng(37.5665, 126.9780),
+          zoom: 11,
           mapTypeControl: false,
-          zoomControl: false, // 줌 컨트롤도 비활성화
+          zoomControl: false,
           logoControl: false,
           mapDataControl: false,
           scaleControl: false,
-          // 상호작용 최적화
-          disableDoubleClickZoom: true, // 더블클릭 줌 비활성화
+          disableDoubleClickZoom: true,
           scrollWheel: true,
           keyboardShortcuts: false,
           draggable: true,
           pinchZoom: true,
-          // 렌더링 최고 속도 설정
-          tileSpare: 1, // 타일 스페어 최소화
-          tileTransition: false, // 애니메이션 비활성화로 속도 향상
-          // 추가 성능 옵션
+          // 렌더링 최적화 설정
+          tileSpare: 0, // 타일 스페어 최소화
+          tileTransition: false, // 타일 전환 애니메이션 비활성화
           useStyleMap: false, // 스타일 맵 비활성화
           enableWheelZoom: true,
           enableDragPan: true,
-          minZoom: 6,
-          maxZoom: 18
+          minZoom: 7,
+          maxZoom: 18,
+          // 추가 성능 최적화
+          tileCaching: true, // 타일 캐싱 활성화
+          backgroundColor: '#f5f5f5' // 배경색 설정으로 로딩 시 깜빡임 방지
         }
         
-        // 지도 생성 (즉시 실행)
         naverMap.current = new window.naver.maps.Map(mapRef.current, mapOptions)
         console.log('⚡ 고속 지도 생성 완료!')
         
-        // 지도 로딩 완료를 더 빠르게 감지
         let loadingComplete = false
         
         const onMapReady = () => {
@@ -58,54 +150,69 @@ export default function MapPage() {
             loadingComplete = true
             console.log('🎯 지도 로딩 완료 - 초고속!')
             
-            // 컨트롤들을 나중에 추가 (필요한 경우)
             setTimeout(() => {
               naverMap.current.setOptions({
-                zoomControl: true // 줌 컨트롤 나중에 활성화
+                zoomControl: true
               })
             }, 500)
           }
         }
         
-        // 여러 이벤트로 로딩 완료 감지
         window.naver.maps.Event.addListener(naverMap.current, 'idle', onMapReady)
         window.naver.maps.Event.addListener(naverMap.current, 'tilesloaded', onMapReady)
         
-        // 백업으로 타이머도 설정
-        setTimeout(onMapReady, 100)
+        // 줌 변경 이벤트 리스너 추가
+        window.naver.maps.Event.addListener(naverMap.current, 'zoom_changed', () => {
+          const zoom = naverMap.current.getZoom()
+          setCurrentZoom(zoom)
+          console.log('줌 레벨 변경:', zoom)
+          
+          // 줌 레벨에 따라 마커 표시/숨김 조정
+          updateMarkersVisibility(zoom)
+        })
         
-        // 현재 위치는 더 나중에 (지도 로딩 완료 후)
+        setTimeout(onMapReady, 50)
+        
+        // 현재 위치 가져오기 및 이슈 표시 (더 빠르게)
         setTimeout(() => {
           if (navigator.geolocation && naverMap.current) {
             navigator.geolocation.getCurrentPosition(
-              (position) => {
+              async (position) => {
                 console.log('📍 현재 위치 적용')
                 const lat = position.coords.latitude
                 const lng = position.coords.longitude
                 const currentPosition = new window.naver.maps.LatLng(lat, lng)
                 
-                // 부드러운 이동 대신 즉시 이동
+                setCurrentLocation({ lat, lng })
+                
                 naverMap.current.setCenter(currentPosition)
                 naverMap.current.setZoom(15)
                 
-                // 마커도 간단하게
+                // 현재 위치 마커 (네이버 맵 기본 스타일)
                 new window.naver.maps.Marker({
                   position: currentPosition,
                   map: naverMap.current,
                   title: '현재 위치'
                 })
+
+                // 근처 이슈 가져오기 및 마커 표시
+                const nearbyIssues = await loadNearbyIssues(lat, lng)
+                addIssueMarkers(nearbyIssues)
               },
-              () => {
+              async () => {
                 console.log('위치 정보 사용 안함 - 기본 위치 유지')
+                // 기본 위치에서도 이슈 표시
+                const defaultIssues = await loadNearbyIssues(37.5665, 126.9780)
+                addIssueMarkers(defaultIssues)
               },
               { 
-                timeout: 5000, // 5초로 단축
+                timeout: 5000,
                 enableHighAccuracy: false,
-                maximumAge: 300000 // 5분간 캐시 사용
+                maximumAge: 300000
               }
             )
           }
-        }, 1000) // 1초 후에 위치 정보 요청
+        }, 500)
         
       } catch (error) {
         console.error('❌ 지도 생성 중 오류:', error)
@@ -123,9 +230,8 @@ export default function MapPage() {
           const lng = position.coords.longitude
           const currentPosition = new window.naver.maps.LatLng(lat, lng)
           
-          // 지도 중심을 현재 위치로 이동
           naverMap.current.setCenter(currentPosition)
-          naverMap.current.setZoom(15) // 줌 레벨을 높여서 더 자세히 보기
+          naverMap.current.setZoom(15)
           
           console.log('📍 현재 위치로 이동:', position.coords)
         },
@@ -135,6 +241,14 @@ export default function MapPage() {
         }
       )
     }
+  }
+
+  const toggleBottomSheet = () => {
+    if (!isBottomSheetExpanded) {
+      // 축소된 상태에서 클릭하면 확장하고 모든 이슈 표시
+      setIssues(allIssues)
+    }
+    setIsBottomSheetExpanded(!isBottomSheetExpanded)
   }
 
   useEffect(() => {
@@ -259,6 +373,47 @@ export default function MapPage() {
             </svg>
             현재 위치
           </button>
+        </div>
+
+        {/* 바텀시트 */}
+        <div className={`${styles.bottomSheet} ${isBottomSheetExpanded ? styles.expanded : ''}`} onClick={!isBottomSheetExpanded ? toggleBottomSheet : undefined}>
+          <div className={styles.bottomSheetContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.bottomSheetHeader}>
+              <div className={styles.bottomSheetHandle} onClick={toggleBottomSheet}></div>
+              <div className={styles.headerContent}>
+                <h3>이 주변 이슈 ({issues.length})</h3>
+                <p>해당 지역에 등록된 주요 상황을 확인하세요</p>
+              </div>
+              {isBottomSheetExpanded && (
+                <button className={styles.closeButton} onClick={toggleBottomSheet}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              )}
+            </div>
+            
+            {isBottomSheetExpanded && (
+              <div className={styles.issuesList}>
+                {isLoadingIssues ? (
+                  <div className={styles.loadingState}>
+                    <div className={styles.spinner}></div>
+                    <p>주변 이슈를 찾고 있습니다...</p>
+                  </div>
+                ) : issues.length > 0 ? (
+                  issues.map((issue) => (
+                    <IssueCard key={issue.id} post={issue} />
+                  ))
+                ) : (
+                  <div className={styles.emptyState}>
+                    <div className={styles.emptyIcon}>📍</div>
+                    <h4>이 지역에 등록된 이슈가 없습니다</h4>
+                    <p>새로운 이슈를 제보해주세요</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>

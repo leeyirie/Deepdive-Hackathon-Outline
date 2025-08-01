@@ -9,9 +9,32 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState('home')
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
+  const [newPostId, setNewPostId] = useState(null)
   const router = useRouter()
 
-
+  // 성공 토스트 확인
+  useEffect(() => {
+    const shouldShowToast = localStorage.getItem('showSuccessToast')
+    const postId = localStorage.getItem('newPostId')
+    
+    console.log('🔍 토스트 확인:', { shouldShowToast, postId })
+    
+    if (shouldShowToast === 'true') {
+      setShowSuccessToast(true)
+      setNewPostId(postId)
+      
+      console.log('✅ 토스트 표시:', { postId })
+      
+      localStorage.removeItem('showSuccessToast')
+      localStorage.removeItem('newPostId')
+      
+      // 5초 후 토스트 숨김 (바로가기 버튼 때문에 시간 연장)
+      setTimeout(() => {
+        setShowSuccessToast(false)
+      }, 5000)
+    }
+  }, [])
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -188,6 +211,23 @@ export default function HomePage() {
            <span>내정보</span>
          </button>
        </nav>
+
+       {/* 제보 등록 성공 토스트 */}
+       {showSuccessToast && (
+         <div className={styles.successToast}>
+           <div className={styles.toastContent}>
+             <span className={styles.toastText}>제보가 완료되었습니다</span>
+             {newPostId && (
+               <button 
+                 className={styles.toastButton}
+                 onClick={() => router.push(`/issues/${newPostId}`)}
+               >
+                 보러가기 &gt;
+               </button>
+             )}
+           </div>
+         </div>
+       )}
     </div>
   )
 }

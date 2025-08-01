@@ -443,3 +443,86 @@
     font-size: 0.9rem;
   }
 }
+
+// 성공 토스트 스타일 (진회색 배경으로 개선)
+.successToast {
+  position: fixed;
+  bottom: 120px;
+  left: 20px;
+  right: 20px;
+  z-index: 9999;
+  animation: slideUp 0.3s ease-out;
+}
+
+.toastContent {
+  background: #2d3748; // 진회색 배경
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+}
+
+.toastText {
+  font-weight: 500;
+  color: white;
+}
+
+.toastButton {
+  background: transparent;
+  color: #4299e1; // 파란색 텍스트
+  border: none;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #3182ce;
+    text-decoration: underline;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 모바일 최적화
+@media (max-width: 768px) {
+  .successToast {
+    bottom: 100px;
+    left: 16px;
+    right: 16px;
+  }
+
+  .toastContent {
+    padding: 14px 18px;
+    gap: 12px;
+  }
+
+  .toastText {
+    font-size: 13px;
+  }
+
+  .toastButton {
+    padding: 4px 6px;
+    font-size: 13px;
+  }
+}

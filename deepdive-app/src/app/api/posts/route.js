@@ -59,7 +59,7 @@ export async function POST(request) {
     console.log('📤 제보 등록 요청 데이터:', body)
 
     // 필수 필드 검증
-    const { userId, title, content, imageURL, locationCode, status } = body
+    const { userId, title, content, imageURL, locationCode, latitude, longitude, status } = body
 
     if (!userId || !title || !content || !locationCode) {
       return NextResponse.json(
@@ -80,6 +80,8 @@ export async function POST(request) {
         content: content.trim(),
         imageURL: imageURL || '',
         locationCode: locationCode,
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null,
         status: status || 0
       })
     })

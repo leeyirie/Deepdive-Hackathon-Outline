@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
+import MapLocationModal from '@/components/MapLocationModal'
 import styles from './report.module.scss'
 
 export default function ReportPage() {
@@ -12,11 +13,16 @@ export default function ReportPage() {
     title: '',
     content: '',
     location: '',
-    locationCode: ''
+    locationCode: '',
+    latitude: null,
+    longitude: null
   })
   const [images, setImages] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showLocationModal, setShowLocationModal] = useState(false)
+  const [showMapModal, setShowMapModal] = useState(false)
+  const [showExitModal, setShowExitModal] = useState(false)
+
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // 폼 입력 핸들러
   const handleInputChange = (field, value) => {
@@ -24,6 +30,27 @@ export default function ReportPage() {
       ...prev,
       [field]: value
     }))
+    setHasUnsavedChanges(true)
+  }
+
+  // 뒤로가기 핸들러
+  const handleBackClick = () => {
+    if (hasUnsavedChanges) {
+      setShowExitModal(true)
+    } else {
+      router.back()
+    }
+  }
+
+  // 나가기 확인
+  const handleExitConfirm = () => {
+    setShowExitModal(false)
+    router.back()
+  }
+
+  // 나가기 취소
+  const handleExitCancel = () => {
+    setShowExitModal(false)
   }
 
   // 이미지 업로드 핸들러
@@ -44,6 +71,7 @@ export default function ReportPage() {
         
         setImages(prev => {
           if (prev.length >= 3) return prev
+          setHasUnsavedChanges(true)
           return [...prev, newImage]
         })
       }
@@ -59,14 +87,19 @@ export default function ReportPage() {
     setImages(prev => prev.filter(img => img.id !== imageId))
   }
 
-  // 위치 선택 핸들러
-  const handleLocationSelect = (location, locationCode) => {
+
+
+  // 지도에서 위치 선택 핸들러
+  const handleMapLocationSelect = async (lat, lng, address) => {
     setFormData(prev => ({
       ...prev,
-      location,
-      locationCode
+      location: address,
+      locationCode: 'CUSTOM',
+      latitude: lat,
+      longitude: lng
     }))
-    setShowLocationModal(false)
+    setShowMapModal(false)
+    setHasUnsavedChanges(true)
   }
 
   // 폼 유효성 검사
@@ -105,6 +138,8 @@ export default function ReportPage() {
         content: formData.content.trim(),
         imageURL: imageUrls.join(','), // 콤마로 구분된 문자열
         locationCode: formData.locationCode,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         status: 0 // 기본 상태
       }
 
@@ -123,10 +158,15 @@ export default function ReportPage() {
         const result = await response.json()
         console.log('✅ 제보 등록 성공:', result)
         
-        // 성공 알림
-        alert('제보가 성공적으로 등록되었습니다!')
+        // 성공 플래그 설정 후 즉시 홈으로 이동
+        setHasUnsavedChanges(false)
+        localStorage.setItem('showSuccessToast', 'true')
         
-        // 홈으로 이동
+        // 새로 생성된 post ID 저장 (바로가기 링크용)
+        if (result.value && result.value.id) {
+          localStorage.setItem('newPostId', result.value.id.toString())
+        }
+        
         router.push('/home')
       } else {
         throw new Error(`제보 등록 실패: ${response.status}`)
@@ -146,7 +186,7 @@ export default function ReportPage() {
       <header className={styles.header}>
         <button 
           className={styles.closeButton}
-          onClick={() => router.push('/home')}
+          onClick={handleBackClick}
         >
           <Icon name="close" size={24} />
         </button>
@@ -184,7 +224,7 @@ export default function ReportPage() {
         <div className={styles.inputGroup}>
           <button
             className={styles.locationButton}
-            onClick={() => setShowLocationModal(true)}
+            onClick={() => setShowMapModal(true)}
           >
             <Icon name="location" size={20} />
             <span className={formData.location ? styles.selected : ''}>
@@ -241,60 +281,53 @@ export default function ReportPage() {
         </button>
       </footer>
 
-      {/* 위치 선택 모달 */}
-      {showLocationModal && (
-        <LocationModal
-          onSelect={handleLocationSelect}
-          onClose={() => setShowLocationModal(false)}
+      {/* 지도 위치 선택 모달 */}
+      {showMapModal && (
+        <MapLocationModal
+          onSelect={handleMapLocationSelect}
+          onClose={() => setShowMapModal(false)}
         />
       )}
+
+      {/* 나가기 확인 모달 */}
+      {showExitModal && (
+        <ExitConfirmModal
+          onConfirm={handleExitConfirm}
+          onCancel={handleExitCancel}
+        />
+      )}
+
+
     </div>
   )
 }
 
-// 위치 선택 모달 컴포넌트
-function LocationModal({ onSelect, onClose }) {
-  const locations = [
-    { name: '서울특별시', code: 'SEOUL' },
-    { name: '부산광역시', code: 'BUSAN' },
-    { name: '대구광역시', code: 'DAEGU' },
-    { name: '인천광역시', code: 'INCHEON' },
-    { name: '광주광역시', code: 'GWANGJU' },
-    { name: '대전광역시', code: 'DAEJEON' },
-    { name: '울산광역시', code: 'ULSAN' },
-    { name: '세종특별자치시', code: 'SEJONG' },
-    { name: '경기도', code: 'GYEONGGI' },
-    { name: '강원도', code: 'GANGWON' },
-    { name: '충청북도', code: 'CHUNGBUK' },
-    { name: '충청남도', code: 'CHUNGNAM' },
-    { name: '전라북도', code: 'JEONBUK' },
-    { name: '전라남도', code: 'JEONNAM' },
-    { name: '경상북도', code: 'GYEONGBUK' },
-    { name: '경상남도', code: 'GYEONGNAM' },
-    { name: '제주특별자치도', code: 'JEJU' }
-  ]
 
+
+// 나가기 확인 모달 컴포넌트
+function ExitConfirmModal({ onConfirm, onCancel }) {
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-        <div className={styles.modalHeader}>
-          <h3>위치 선택</h3>
-          <button onClick={onClose}>
-            <Icon name="close" size={20} />
+    <div className={styles.modalOverlay}>
+      <div className={styles.exitModalContent}>
+        <h3>정말로 나가시겠습니까?</h3>
+        <p>작성중인 내용은 저장되지 않습니다.</p>
+        <p>작성중인 내용은 저장되지 않습니다.</p>
+        <div className={styles.exitModalButtons}>
+          <button 
+            className={styles.cancelButton}
+            onClick={onCancel}
+          >
+            닫기
           </button>
-        </div>
-        <div className={styles.locationList}>
-          {locations.map((location) => (
-            <button
-              key={location.code}
-              className={styles.locationItem}
-              onClick={() => onSelect(location.name, location.code)}
-            >
-              {location.name}
-            </button>
-          ))}
+          <button 
+            className={styles.confirmButton}
+            onClick={onConfirm}
+          >
+            나가기
+          </button>
         </div>
       </div>
     </div>
   )
 }
+

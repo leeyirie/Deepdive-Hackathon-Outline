@@ -4,6 +4,8 @@
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
 }
 
 .header {
@@ -108,7 +110,7 @@
 
 .controls {
   position: absolute;
-  bottom: 20px;
+  bottom: 120px;
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -158,13 +160,180 @@
   }
 
   .controls {
-    bottom: 16px;
+    bottom: 100px;
     right: 16px;
   }
 
   .locationButton {
     padding: 10px 14px;
     font-size: 13px;
+  }
+
+  .bottomSheet {
+    height: 100px;
+
+    &.expanded {
+      height: 50vh;
+    }
+  }
+
+  .bottomSheetContent {
+    padding: 16px;
+  }
+
+  .bottomSheetHeader {
+    h3 {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+}
+
+// 바텀시트 스타일
+.bottomSheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 120px;
+  overflow: hidden;
+  cursor: pointer;
+
+  &.expanded {
+    height: 60vh;
+    cursor: default;
+  }
+}
+
+.bottomSheetContent {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.bottomSheetHeader {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.bottomSheetHandle {
+  width: 40px;
+  height: 4px;
+  background-color: #ddd;
+  border-radius: 2px;
+  margin: 0 auto 16px auto;
+  cursor: pointer;
+}
+
+.headerContent {
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.issuesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+
+  .emptyIcon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4285f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
   }
 }
 
@@ -198,6 +367,20 @@
 
     &:hover {
       background-color: #333;
+    }
+  }
+
+  .bottomSheet {
+    background-color: #2a2a2a;
+  }
+
+  .bottomSheetHeader {
+    h3 {
+      color: #fff;
+    }
+
+    p {
+      color: #ccc;
     }
   }
 }
