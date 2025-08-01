@@ -88,15 +88,15 @@ export default function HomePage() {
       <header className={styles.header}>
         <div className={styles.logo}>OUTLINE</div>
         <div className={styles.headerIcons}>
-                     <button className={styles.iconButton}>
-             <Icon name="search" size={24} />
-           </button>
-           <button className={styles.iconButton}>
-             <div className={styles.notificationIcon}>
-               <Icon name="notification-true" size={24} />
-               <div className={styles.notificationDot}></div>
-             </div>
-           </button>
+          <button className={styles.iconButton} onClick={() => router.push('/search')}>
+            <Icon name="search" size={24} />
+          </button>
+          <button className={styles.iconButton}>
+            <div className={styles.notificationIcon}>
+              <Icon name="notification-true" size={24} />
+              <div className={styles.notificationDot}></div>
+            </div>
+          </button>
         </div>
       </header>
 
