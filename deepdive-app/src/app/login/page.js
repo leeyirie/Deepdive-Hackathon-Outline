@@ -31,7 +31,7 @@ export default function LoginPage() {
           
           // 로그인 정보 저장
           localStorage.setItem('userId', data.userId)
-          localStorage.setItem('userNickname', data.username || nickname.trim())
+          localStorage.setItem('userName', data.username || nickname.trim())
           
           // 홈 페이지로 이동
           router.push('/home')

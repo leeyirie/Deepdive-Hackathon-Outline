@@ -205,7 +205,10 @@ export default function HomePage() {
           </button>
          <button 
            className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}
-           onClick={() => setActiveTab('profile')}
+           onClick={() => {
+             setActiveTab('profile')
+             router.push('/profile')
+           }}
          >
            <Icon name={activeTab === 'profile' ? 'my-true' : 'my-false'} size={24} />
            <span>내정보</span>

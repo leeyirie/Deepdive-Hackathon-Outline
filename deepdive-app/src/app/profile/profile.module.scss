@@ -1,0 +1,322 @@
+.profileContainer {
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh; /* dynamic viewport height */
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  /* 모바일 브라우저 최적화 */
+  -webkit-overflow-scrolling: touch;
+}
+
+// 상단 헤더
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+  /* iOS Safari 상단 안전 영역 대응 */
+  padding-top: max(16px, env(safe-area-inset-top, 16px));
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+// 메인 콘텐츠
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 16px calc(var(--bottom-nav-height) + 20px) 16px;
+  box-sizing: border-box;
+  /* 모바일 스크롤 최적화 */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+// 사용자 프로필 섹션
+.profileSection {
+  margin-bottom: 20px;
+}
+
+.userCard {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.userName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.userActions {
+  display: flex;
+  gap: 12px;
+}
+
+.actionButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+// 설정 섹션
+.settingsSection,
+.otherSettingsSection {
+  margin-bottom: 20px;
+}
+
+.settingsCard {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.875rem;
+  color: #374151;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.settingInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settingValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+}
+
+// 토글 스위치
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #d1d5db;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.active {
+    background-color: #262E39;
+  }
+}
+
+.toggleHandle {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle.active .toggleHandle {
+  transform: translateX(20px);
+}
+
+// 구분선
+.divider {
+  height: 1px;
+  background-color: #f3f4f6;
+  margin: 16px 0;
+}
+
+// 액션 버튼
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  margin-top: 0; // 기존 margin-top 제거
+}
+
+.logoutButton,
+.withdrawButton {
+  flex: 1;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #374151;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+// 하단 네비게이션
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  background-color: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 8px 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  /* iOS Safari 하단 안전 영역 대응 */
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+  height: var(--bottom-nav-height);
+  box-sizing: border-box;
+}
+
+.navItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:hover {
+    color: #6b7280;
+  }
+
+  &.active {
+    color: #262E39;
+  }
+
+  img {
+    transition: all 0.2s;
+  }
+}
+
+// 반응형
+@media (max-width: 500px) {
+  .mainContent {
+    padding: 16px 16px calc(var(--bottom-nav-height) + 16px) 16px;
+  }
+
+  .header {
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top, 12px));
+  }
+
+  .userCard,
+  .settingsCard {
+    padding: 16px;
+  }
+
+  .userName {
+    font-size: 1.25rem;
+  }
+
+  .actionButton {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+
+  .settingItem {
+    padding: 10px 0;
+    font-size: 0.8rem;
+  }
+}
+
+// 모바일 최적화
+@media (max-width: 768px) {
+  .mainContent {
+    padding-bottom: calc(var(--bottom-nav-height) + 24px);
+  }
+}
+
+// 로딩 컨테이너
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #6b7280;
+  font-size: 0.875rem;
+} 
