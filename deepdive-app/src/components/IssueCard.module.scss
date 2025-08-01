@@ -10,10 +10,24 @@
   border-bottom: 1px solid #e5e7eb;
   transition: all 0.2s;
   cursor: pointer;
+  /* 모바일 터치 최적화 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* 터치 영역 확대 */
+  min-height: 44px;
 
   &:hover {
     background-color: #f9fafb;
     transform: translateY(-1px);
+  }
+
+  &:active {
+    background-color: #f3f4f6;
+    transform: translateY(0);
   }
 
   &:last-child {

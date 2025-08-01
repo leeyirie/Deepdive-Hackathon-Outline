@@ -19,11 +19,42 @@ export default function IssueCard({ post }) {
   }
 
   const handleClick = () => {
-    router.push(`/issues/${post.id}`)
+    console.log('🔍 IssueCard 클릭:', post.id)
+    if (post && post.id) {
+      router.push(`/issues/${post.id}`)
+    }
+  }
+
+  const handleTouchStart = (e) => {
+    // 터치 시작 시 기본 동작 방지
+    e.preventDefault()
+  }
+
+  const handleTouchEnd = (e) => {
+    // 터치 종료 시 클릭 이벤트 발생
+    e.preventDefault()
+    handleClick()
+  }
+
+  const handleKeyDown = (e) => {
+    // 키보드 접근성 지원
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handleClick()
+    }
   }
 
   return (
-    <div className={styles.issueCard} onClick={handleClick}>
+    <div 
+      className={styles.issueCard} 
+      onClick={handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`${post.title} 상세보기`}
+    >
       <div className={styles.issueContent}>
         <div className={styles.statusTagTop}>
           {/* 백엔드 데이터: post.status (0: 진행중, 1: 해결됨) */}
