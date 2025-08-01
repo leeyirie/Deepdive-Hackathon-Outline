@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-})
-
 export const dynamic = 'force-dynamic'
 
 export async function POST(request) {
@@ -27,6 +23,11 @@ export async function POST(request) {
     }
 
     console.log('🤖 OpenAI API로 요약 생성 중...')
+    
+    // 런타임에 OpenAI 클라이언트 생성
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    })
     
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",

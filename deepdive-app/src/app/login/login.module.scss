@@ -1,21 +1,24 @@
 .loginContainer {
     width: 100%;
-    height: 100%;
-    min-height: 100vh;
+    height: 100vh; // 정확히 뷰포트 높이
     background-color: white;
-    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     box-sizing: border-box;
+    overflow: hidden; // 스크롤 방지
   }
   
   .outlineSection {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 320px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     max-width: 280px;
+    margin: 0 auto;
+    padding: 40px 20px;
   }
   
   .outlineTitle {
@@ -33,9 +36,11 @@
   }
   
   .formContainer {
-    margin-top: auto;
-    padding: 0 20px 40px 20px;
+    flex-shrink: 0; // 폼이 줄어들지 않도록
+    padding: 20px 20px 40px 20px;
     box-sizing: border-box;
+    max-height: 50vh; // 최대 높이 제한
+    overflow-y: auto; // 필요시 스크롤
   }
   
   .form {
@@ -99,5 +104,31 @@
       background-color: #D1D6DA;
       color: #9ca3af;
       cursor: not-allowed;
+    }
+  }
+
+  // 모바일 최적화
+  @media (max-height: 700px) {
+    .outlineSection {
+      padding: 20px;
+    }
+    
+    .outlineTitle {
+      font-size: 1.875rem;
+    }
+    
+    .formContainer {
+      padding: 15px 20px 30px 20px;
+    }
+  }
+
+  @media (max-height: 600px) {
+    .outlineTitle {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .outlineDescription {
+      font-size: 0.875rem;
     }
   } 

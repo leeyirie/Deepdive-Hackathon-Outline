@@ -1,11 +1,12 @@
 .reportContainer {
   width: 100%;
+  min-height: 100vh;
   height: 100vh;
   background-color: white;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 }
 
 // 상단 헤더
