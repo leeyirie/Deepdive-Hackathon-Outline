@@ -1,5 +1,15 @@
 {
-  "buildCommand": "cd deepdive-app && npm run build",
-  "outputDirectory": "deepdive-app/.next",
-  "installCommand": "cd deepdive-app && npm install"
+  "version": 2,
+  "builds": [
+    {
+      "src": "deepdive-app/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "deepdive-app/$1"
+    }
+  ]
 }
