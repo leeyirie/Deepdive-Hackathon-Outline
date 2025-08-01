@@ -163,13 +163,16 @@ export default function HomePage() {
            <Icon name={activeTab === 'stats' ? 'analysis-true' : 'analysis-false'} size={24} />
            <span>통계</span>
          </button>
-                   <button 
-            className={`${styles.navItem} ${activeTab === 'report' ? styles.active : ''}`}
-            onClick={() => setActiveTab('report')}
-          >
-            <Icon name="upload-false" size={24} />
-            <span>제보</span>
-          </button>
+                                     <button 
+           className={`${styles.navItem} ${activeTab === 'report' ? styles.active : ''}`}
+           onClick={() => {
+             setActiveTab('report')
+             router.push('/report')
+           }}
+         >
+           <Icon name={activeTab === 'report' ? 'upload-true' : 'upload-false'} size={24} />
+           <span>제보</span>
+         </button>
                    <button 
             className={`${styles.navItem} ${activeTab === 'favorites' ? styles.active : ''}`}
             onClick={() => setActiveTab('favorites')}

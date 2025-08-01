@@ -231,7 +231,7 @@ export default function MapPage() {
               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <h1 className={styles.title}>지도</h1>
+          <h1 className={styles.title}>전국 이슈</h1>
           <div className={styles.placeholder}></div>
         </header>
 

@@ -52,3 +52,58 @@ export async function GET(request, { params }) {
     )
   }
 }
+
+export async function POST(request) {
+  try {
+    const body = await request.json()
+    console.log('📤 제보 등록 요청 데이터:', body)
+
+    // 필수 필드 검증
+    const { userId, title, content, imageURL, locationCode, status } = body
+
+    if (!userId || !title || !content || !locationCode) {
+      return NextResponse.json(
+        { error: 'userId, title, content, locationCode are required' },
+        { status: 400 }
+      )
+    }
+
+    // 백엔드 API 호출
+    const backendResponse = await fetch(`${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: parseInt(userId),
+        title: title.trim(),
+        content: content.trim(),
+        imageURL: imageURL || '',
+        locationCode: locationCode,
+        status: status || 0
+      })
+    })
+
+    if (backendResponse.ok) {
+      const data = await backendResponse.json()
+      console.log('✅ 제보 등록 성공:', data)
+      return NextResponse.json(data)
+    } else {
+      const errorText = await backendResponse.text()
+      console.error('❌ 백엔드 제보 등록 실패:', {
+        status: backendResponse.status,
+        error: errorText
+      })
+      return NextResponse.json(
+        { error: `Failed to create post: ${backendResponse.status}` },
+        { status: backendResponse.status }
+      )
+    }
+  } catch (error) {
+    console.error('❌ 제보 등록 API 오류:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
