@@ -145,14 +145,14 @@ export default function StatsPage() {
             router.push('/home')
           }}
         >
-          <Icon name={activeTab === 'home' ? 'home-true' : 'home-false'} size={20} />
+          <Icon name={activeTab === 'home' ? 'home-true' : 'home-false'} size={24} />
           <span>홈</span>
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'stats' ? styles.active : ''}`}
           onClick={() => setActiveTab('stats')}
         >
-          <Icon name={activeTab === 'stats' ? 'analysis-true' : 'analysis-false'} size={20} />
+          <Icon name={activeTab === 'stats' ? 'analysis-true' : 'analysis-false'} size={24} />
           <span>통계</span>
         </button>
         <button 
@@ -162,7 +162,7 @@ export default function StatsPage() {
             router.push('/report')
           }}
         >
-          <Icon name="upload-false" size={20} />
+          <Icon name="upload-false" size={24} />
           <span>제보</span>
         </button>
         <button 
@@ -172,7 +172,7 @@ export default function StatsPage() {
             router.push('/favorites')
           }}
         >
-          <Icon name={activeTab === 'favorites' ? 'favorite-true' : 'favorite-false'} size={20} />
+          <Icon name={activeTab === 'favorites' ? 'favorite-true' : 'favorite-false'} size={24} />
           <span>관심 지역</span>
         </button>
         <button 
@@ -182,7 +182,7 @@ export default function StatsPage() {
             router.push('/profile')
           }}
         >
-          <Icon name={activeTab === 'profile' ? 'my-true' : 'my-false'} size={20} />
+          <Icon name={activeTab === 'profile' ? 'my-true' : 'my-false'} size={24} />
           <span>내정보</span>
         </button>
       </nav>

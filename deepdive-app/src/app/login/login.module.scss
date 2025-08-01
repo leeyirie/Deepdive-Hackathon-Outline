@@ -1,12 +1,13 @@
 .loginContainer {
     width: 100%;
     height: 100vh; // 정확히 뷰포트 높이
+    height: 100dvh; // 동적 뷰포트 높이 (모바일 최적화)
     background-color: white;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     box-sizing: border-box;
     overflow: hidden; // 스크롤 방지
+    position: relative;
   }
   
   .outlineSection {
@@ -18,7 +19,8 @@
     width: 100%;
     max-width: 280px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 20px;
+    min-height: 0; // flex 아이템이 줄어들 수 있도록
   }
   
   .outlineTitle {
@@ -37,10 +39,12 @@
   
   .formContainer {
     flex-shrink: 0; // 폼이 줄어들지 않도록
-    padding: 20px 20px 40px 20px;
+    padding: 20px;
     box-sizing: border-box;
-    max-height: 50vh; // 최대 높이 제한
-    overflow-y: auto; // 필요시 스크롤
+    background-color: white;
+    
+    // 안전한 하단 여백 (iOS 홈 인디케이터 고려)
+    padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
   }
   
   .form {
@@ -65,6 +69,11 @@
     transition: all 0.2s;
     box-sizing: border-box;
     margin: 0;
+    
+    // 모바일 성능 최적화
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateZ(0); // 하드웨어 가속
   
     &::placeholder {
       color: #9ca3af;
@@ -90,6 +99,11 @@
     margin: 0;
     outline: none;
     text-align: center;
+    
+    // 모바일 성능 최적화
+    -webkit-tap-highlight-color: transparent;
+    transform: translateZ(0); // 하드웨어 가속
+    touch-action: manipulation; // 터치 지연 제거
   
     &.active {
       background-color: #262E39;
@@ -108,27 +122,77 @@
   }
 
   // 모바일 최적화
-  @media (max-height: 700px) {
+  @media (max-height: 800px) {
     .outlineSection {
-      padding: 20px;
+      padding: 15px 20px;
     }
     
     .outlineTitle {
-      font-size: 1.875rem;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
     }
     
     .formContainer {
-      padding: 15px 20px 30px 20px;
+      padding: 15px 20px;
+      padding-bottom: max(30px, env(safe-area-inset-bottom, 20px));
+    }
+    
+    .form {
+      gap: 0.75rem;
     }
   }
 
-  @media (max-height: 600px) {
+  @media (max-height: 700px) {
     .outlineTitle {
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       margin-bottom: 0.5rem;
     }
     
     .outlineDescription {
+      font-size: 0.9rem;
+    }
+    
+    .form {
+      gap: 0.5rem;
+    }
+    
+    .input, .button {
+      padding: 14px;
+    }
+  }
+
+  @media (max-height: 600px) {
+    .outlineSection {
+      padding: 10px 20px;
+    }
+    
+    .outlineTitle {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .outlineDescription {
       font-size: 0.875rem;
+    }
+    
+    .input, .button {
+      padding: 12px;
+      font-size: 0.9rem;
+    }
+  }
+
+  // iPhone SE 같은 매우 작은 화면
+  @media (max-height: 550px) {
+    .outlineTitle {
+      font-size: 1.25rem;
+    }
+    
+    .outlineDescription {
+      font-size: 0.8rem;
+    }
+    
+    .formContainer {
+      padding: 10px 20px;
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 15px));
     }
   } 

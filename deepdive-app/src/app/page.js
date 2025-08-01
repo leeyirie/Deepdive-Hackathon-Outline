@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
   const router = useRouter()
 
-  const handleLogoClick = () => {
+  const handleScreenTouch = () => {
     router.push('/login')
   }
 
   return (
     <div
       className="cursor-pointer"
-      onClick={handleLogoClick}
+      onClick={handleScreenTouch}
+      onTouchStart={handleScreenTouch} // 모바일 터치 이벤트 추가
       style={{ 
         position: 'relative',
         width: '100%',
@@ -19,7 +20,9 @@ export default function Home() {
         backgroundColor: '#262E39',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        touchAction: 'manipulation', // 터치 최적화
+        WebkitTapHighlightColor: 'transparent' // 터치 하이라이트 제거
       }}
     >
       <h1 

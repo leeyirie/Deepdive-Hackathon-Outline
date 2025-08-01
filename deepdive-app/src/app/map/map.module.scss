@@ -110,7 +110,7 @@
 
 .controls {
   position: absolute;
-  bottom: 120px;
+  top: 100px; // 조금 더 아래로 이동
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -160,7 +160,7 @@
   }
 
   .controls {
-    bottom: 100px;
+    top: 90px; // 모바일에서도 조금 더 아래로
     right: 16px;
   }
 
@@ -170,10 +170,11 @@
   }
 
   .bottomSheet {
-    height: 100px;
+    height: 120px; // 모바일에서도 충분한 높이 확보
+    max-width: 100%; // 모바일에서는 전체 너비 사용
 
     &.expanded {
-      height: 50vh;
+      height: 60vh; // 모바일에서 적절한 확장 높이
     }
   }
 
@@ -192,23 +193,64 @@
   }
 }
 
+// iPhone 13 Pro 등 긴 화면 최적화
+@media (max-height: 900px) and (max-width: 430px) {
+  .bottomSheet {
+    height: 130px; // 조금 더 높게
+    
+    &.expanded {
+      height: 65vh; // 확장 시 적절한 높이
+    }
+  }
+}
+
+// 매우 작은 화면 (iPhone SE 등)
+@media (max-height: 700px) {
+  .bottomSheet {
+    height: 110px;
+    
+    &.expanded {
+      height: 55vh;
+    }
+  }
+  
+  .bottomSheetContent {
+    padding: 14px;
+  }
+  
+  .headerContent {
+    h3 {
+      font-size: 16px;
+    }
+    
+    p {
+      font-size: 13px;
+    }
+  }
+}
+
 // 바텀시트 스타일
 .bottomSheet {
-  position: absolute;
+  position: fixed; // absolute에서 fixed로 변경
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px; // 모바일 최대 너비 제한
   background-color: #ffffff;
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 120px;
+  height: 140px; // 높이를 조금 더 키워서 헤더가 잘 보이도록
   overflow: hidden;
   cursor: pointer;
+  
+  // 안전 영역 고려 (iOS 홈 인디케이터)
+  padding-bottom: env(safe-area-inset-bottom, 0);
 
   &.expanded {
-    height: 60vh;
+    height: 70vh; // 확장 시 더 많은 공간 사용
     cursor: default;
   }
 }
@@ -222,6 +264,10 @@
 .bottomSheetHeader {
   margin-bottom: 16px;
   position: relative;
+  min-height: 60px; // 최소 높이 보장
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .bottomSheetHandle {
@@ -239,6 +285,7 @@
     font-weight: 600;
     color: #333;
     margin: 0 0 4px 0;
+    line-height: 1.3;
   }
 
   p {

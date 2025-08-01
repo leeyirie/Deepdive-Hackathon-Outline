@@ -255,7 +255,7 @@
   cursor: pointer;
   color: #9ca3af;
   transition: all 0.2s;
-  font-size: 0.75rem;
+  font-size: 0.875rem; // 홈 페이지와 동일하게 수정
   font-weight: 500;
 
   &:hover {
@@ -264,5 +264,9 @@
 
   &.active {
     color: #262E39;
+  }
+
+  img {
+    transition: all 0.2s;
   }
 }
