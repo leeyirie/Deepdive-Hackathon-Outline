@@ -16,6 +16,16 @@ html, body {
   display: flex;
   justify-content: center;
   background-color: #f5f5f5;
+  /* 모바일 브라우저 주소창 대응 */
+  height: 100vh; /* 구형 브라우저 폴백 */
+  height: 100dvh; /* dynamic viewport height */
+  overflow-x: hidden;
+  /* iOS Safari 주소창 대응 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 /* 모바일 웹앱 컨테이너 */
@@ -23,10 +33,14 @@ body > div {
   width: 100vw;
   max-width: 440px;
   min-width: 360px;
-  height: 100vh;
+  height: 100vh; /* 구형 브라우저 폴백 */
+  height: 100dvh; /* dynamic viewport height */
   background-color: white;
   position: relative;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  /* 모바일 브라우저 최적화 */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 반응형 설정 */
@@ -71,5 +85,42 @@ body > div {
   .login-input, .login-button {
     font-size: 0.875rem; /* 14px */
     padding: 0.625rem 0.875rem; /* 10px 14px */
+  }
+}
+
+/* 모바일 스크롤 최적화 */
+* {
+  -webkit-overflow-scrolling: touch; /* iOS 스크롤 최적화 */
+}
+
+/* 하단 네비게이션 높이 상수 */
+:root {
+  --bottom-nav-height: 80px;
+  --bottom-nav-height-mobile: 70px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 모바일에서 하단 네비게이션 높이 조정 */
+@media (max-width: 768px) {
+  :root {
+    --bottom-nav-height: var(--bottom-nav-height-mobile);
+  }
+}
+
+/* 모바일 브라우저 주소창 대응을 위한 추가 설정 */
+@media screen and (max-width: 768px) {
+  html, body {
+    /* iOS Safari에서 주소창 숨김 방지 */
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+  }
+  
+  /* 스크롤 컨테이너 최적화 */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
   }
 }

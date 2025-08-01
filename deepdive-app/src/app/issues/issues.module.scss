@@ -2,11 +2,14 @@
   width: 100%;
   min-height: 100vh;
   height: 100vh;
+  height: 100dvh; /* dynamic viewport height */
   background-color: white;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  /* 모바일 브라우저 최적화 */
+  -webkit-overflow-scrolling: touch;
 }
 
 // 상단 헤더
@@ -18,6 +21,8 @@
   border-bottom: 1px solid #f3f4f6;
   background-color: white;
   z-index: 10;
+  /* iOS Safari 상단 안전 영역 대응 */
+  padding-top: max(16px, env(safe-area-inset-top, 16px));
 }
 
 .backButton {
@@ -90,7 +95,13 @@
 .mainContent {
   flex: 1;
   overflow-y: auto;
-  padding: 0 16px;
+  overflow-x: hidden;
+  padding: 0 16px 20px 16px; // 하단 여백 추가
+  box-sizing: border-box;
+  /* 모바일 스크롤 최적화 */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
 }
 
 .issuesList {

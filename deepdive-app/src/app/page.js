@@ -17,12 +17,14 @@ export default function Home() {
         position: 'relative',
         width: '100%',
         height: '100vh',
+        height: '100dvh', // dynamic viewport height
         backgroundColor: '#262E39',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         touchAction: 'manipulation', // 터치 최적화
-        WebkitTapHighlightColor: 'transparent' // 터치 하이라이트 제거
+        WebkitTapHighlightColor: 'transparent', // 터치 하이라이트 제거
+        WebkitOverflowScrolling: 'touch' // iOS 스크롤 최적화
       }}
     >
       <h1 
