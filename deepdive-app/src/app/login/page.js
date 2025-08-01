@@ -7,20 +7,48 @@ export default function LoginPage() {
   const router = useRouter()
   const [nickname, setNickname] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (nickname.trim()) {
-      // 로그인 처리 로직
-      console.log('닉네임:', nickname)
-      // 여기서 실제로는 로그인 정보를 저장하거나 처리하는 로직이 들어갈 수 있습니다
-      localStorage.setItem('userNickname', nickname.trim())
-      // 홈 페이지로 이동
-      router.push('/home')
+    if (nickname.trim() && !isLoading) {
+      setIsLoading(true)
+      try {
+        // Next.js API Route를 통해 백엔드 호출
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: nickname.trim()
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          console.log('로그인 성공:', data)
+          
+          // 로그인 정보 저장
+          localStorage.setItem('userId', data.userId)
+          localStorage.setItem('userNickname', data.username || nickname.trim())
+          
+          // 홈 페이지로 이동
+          router.push('/home')
+        } else {
+          console.error('로그인 실패:', response.status)
+          alert('로그인에 실패했습니다. 다시 시도해주세요.')
+        }
+      } catch (error) {
+        console.error('로그인 에러:', error)
+        alert('서버 연결에 실패했습니다. 다시 시도해주세요.')
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
-  const isButtonActive = nickname.trim().length > 0
+  const isButtonActive = nickname.trim().length > 0 && !isLoading
 
   return (
     <div className={styles.loginContainer}>
@@ -48,7 +76,7 @@ export default function LoginPage() {
             disabled={!isButtonActive}
             className={`${styles.button} ${isButtonActive ? styles.active : styles.inactive}`}
           >
-            간단하게 시작하기
+            {isLoading ? '로그인 중...' : '간단하게 시작하기'}
           </button>
         </form>
       </div>
