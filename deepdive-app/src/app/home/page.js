@@ -28,12 +28,20 @@ export default function HomePage() {
 
              {/* 알림 배너 */}
        <div className={styles.alertBanner}>
-         <Icon name="siren" size={16} />
+         <Icon name="siren" size={20} className={styles.alertIcon} />
          <span>전북 고창군 단수</span>
        </div>
 
       {/* 메인 콘텐츠 */}
       <main className={styles.mainContent}>
+        {/* 전국 이슈 섹션 */}
+        <div className={styles.nationalIssuesSection}>
+          <div className={styles.sectionHeader}>
+            <h2>전국이슈</h2>
+            <button className={styles.moreButton}>더보기</button>
+          </div>
+        </div>
+
         {/* 지도 영역 */}
         <div className={styles.mapSection}>
           <div className={styles.mapContainer}>
