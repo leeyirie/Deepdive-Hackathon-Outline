@@ -14,6 +14,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
+  margin-top: 32px;
   border-bottom: 1px solid #f3f4f6;
   background-color: white;
   z-index: 10;
@@ -93,8 +94,10 @@
 
 .mapContainer {
   width: 100%;
-  height: 200px;
-  background-color: #f3f4f6;
+  height: 0;
+  padding-bottom: 70%; // 🔧 데스크톱 회색영역 비율 조정 (70% = 높이가 너비의 70%)
+  max-width: 400px;
+  background-color: #F2F3F5; // 회색 영역 배경색
   border-radius: 12px;
   overflow: hidden;
   position: relative;
@@ -102,7 +105,16 @@
   transition: transform 0.2s ease;
 
   &:hover {
-    transform: scale(1.02);
+    transform: scale(1.01);
+  }
+
+  @media (max-width: 480px) {
+    padding-bottom: 45%; // 🔧 모바일 회색영역 비율 조정 (75% → 65%로 낮춤)
+    max-width: none;
+  }
+
+  @media screen and (max-width: 390px) {
+    padding-bottom: 40%; // 🔧 작은 모바일 회색영역 비율 조정 (80% → 70%로 낮춤)
   }
 }
 
@@ -121,15 +133,32 @@
 }
 
 .mapPlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e5e7eb;
+  background-color: #F2F3F5;
   color: #6b7280;
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+.mapImage {
+  // 웹 환경: 지도 SVG가 컨테이너의 95% 크기로 표시 (5% 여백)
+  width: 95%;
+  height: 95%;
+  object-fit: contain; // 이미지 비율 유지하면서 컨테이너에 맞춤
+  object-position: center; // 이미지를 중앙 정렬
+
+  // 모바일 환경: 지도 SVG 크기를 더 작게 하여 웹과 비슷한 시각적 균형 유지
+  @media (max-width: 480px) {
+    width: 75%; // 모바일에서는 75% 크기로 적절한 여백 제공
+    height: 75%; // 웹 대비 상대적으로 작게 표시하여 적절한 비율감 유지
+  }
 }
 
 // 이슈 섹션
@@ -149,6 +178,14 @@
   font-weight: bold;
   color: black;
   margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+  }
+
+  @media screen and (max-width: 390px) {
+    font-size: 1.25rem;
+  }
 }
 
 .moreButton {
@@ -355,7 +392,7 @@
   cursor: pointer;
   color: #9ca3af;
   transition: all 0.2s;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
 
   &:hover {

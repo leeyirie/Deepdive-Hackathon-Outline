@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
 import IssueCard from '@/components/IssueCard'
-
 import styles from './home.module.scss'
 
 export default function HomePage() {
@@ -86,15 +85,14 @@ export default function HomePage() {
         <div className={styles.nationalIssuesSection}>
           <div className={styles.sectionHeader}>
             <h2>전국이슈</h2>
-            <button className={styles.moreButton}>더보기</button>
           </div>
         </div>
 
-        {/* 지도 영역 */}
+        {/* 지도 이미지 영역 */}
         <div className={styles.mapSection}>
           <div className={styles.mapContainer} onClick={() => router.push('/map')}>
             <div className={styles.mapPlaceholder}>
-              <span>카카오맵 API</span>
+              <img src="/icons/map.svg" alt="지도" className={styles.mapImage} />
             </div>
           </div>
         </div>
@@ -148,7 +146,7 @@ export default function HomePage() {
            className={`${styles.navItem} ${activeTab === 'home' ? styles.active : ''}`}
            onClick={() => setActiveTab('home')}
          >
-           <Icon name={activeTab === 'home' ? 'home-true' : 'home-false'} size={20} />
+           <Icon name={activeTab === 'home' ? 'home-true' : 'home-false'} size={24} />
            <span>홈</span>
          </button>
          <button 
@@ -158,28 +156,28 @@ export default function HomePage() {
              router.push('/stats')
            }}
          >
-           <Icon name={activeTab === 'stats' ? 'analysis-true' : 'analysis-false'} size={20} />
+           <Icon name={activeTab === 'stats' ? 'analysis-true' : 'analysis-false'} size={24} />
            <span>통계</span>
          </button>
                    <button 
             className={`${styles.navItem} ${activeTab === 'report' ? styles.active : ''}`}
             onClick={() => setActiveTab('report')}
           >
-            <Icon name="upload-false" size={20} />
+            <Icon name="upload-false" size={24} />
             <span>제보</span>
           </button>
                    <button 
             className={`${styles.navItem} ${activeTab === 'favorites' ? styles.active : ''}`}
             onClick={() => setActiveTab('favorites')}
           >
-            <Icon name={activeTab === 'favorites' ? 'favorite-true' : 'favorite-false'} size={20} />
+            <Icon name={activeTab === 'favorites' ? 'favorite-true' : 'favorite-false'} size={24} />
             <span>관심 지역</span>
           </button>
          <button 
            className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}
            onClick={() => setActiveTab('profile')}
          >
-           <Icon name={activeTab === 'profile' ? 'my-true' : 'my-false'} size={20} />
+           <Icon name={activeTab === 'profile' ? 'my-true' : 'my-false'} size={24} />
            <span>내정보</span>
          </button>
        </nav>
