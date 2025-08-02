@@ -182,12 +182,7 @@ export default function DonationDetailPage() {
         </div>
       </main>
 
-      {/* 기부하기 버튼 */}
-      <div className={styles.donateButtonContainer}>
-        <button className={styles.donateButton}>
-          기부하기
-        </button>
-      </div>
+     
     </div>
   )
 } 
