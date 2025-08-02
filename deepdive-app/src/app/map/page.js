@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Script from 'next/script'
 import IssueCard from '@/components/IssueCard'
 import { fetchNearbyIssues } from '@/lib/services/issues'
+import { getProvinceCode, isLocationInProvince, isLocationInCity } from '@/lib/utils'
 import styles from './map.module.scss'
 
 export default function MapPage() {
@@ -31,7 +32,9 @@ export default function MapPage() {
     '경상남도': { lat: 35.5, lng: 128.2, zoom: 8 },
     '전라북도': { lat: 35.8, lng: 127.1, zoom: 8 },
     '전라남도': { lat: 34.8, lng: 126.8, zoom: 8 },
-    '제주특별자치도': { lat: 33.5, lng: 126.5, zoom: 10 }
+    '제주특별자치도': { lat: 33.5, lng: 126.5, zoom: 10 },
+    '문경시': { lat: 36.5946, lng: 128.2015, zoom: 12 },
+    '창원시': { lat: 35.2278, lng: 128.6817, zoom: 12 }
   }
 
   // URL 파라미터에서 지역 정보 가져오기
@@ -44,19 +47,176 @@ export default function MapPage() {
     }
   }, [searchParams])
 
+  // 선택된 지역에 따라 이슈 필터링
+  useEffect(() => {
+    if (selectedRegion && allIssues.length > 0) {
+      filterIssuesByRegion(selectedRegion)
+    }
+  }, [selectedRegion, allIssues])
+
+  // 지역별 이슈 필터링 함수
+  const filterIssuesByRegion = (regionName) => {
+    console.log('🔍 지역별 필터링 시작:', regionName)
+    console.log('📦 전체 이슈 개수:', allIssues.length)
+    
+    let filteredIssues = []
+    
+    // 문경시, 창원시 특별 처리
+    if (regionName === '문경시' || regionName === '창원시') {
+      console.log('🏙️ 도시별 필터링:', regionName)
+      
+      // 전체 이슈의 locationCode 확인
+      console.log('📍 전체 이슈 locationCode 목록:', allIssues.map(issue => ({
+        id: issue.id,
+        title: issue.title,
+        locationCode: issue.locationCode
+      })))
+      
+      // 해당 도시에 속하는 이슈들만 필터링
+      filteredIssues = allIssues.filter(issue => {
+        const isInCity = issue.locationCode && isLocationInCity(issue.locationCode, regionName)
+        console.log(`🔍 이슈 "${issue.title}" (${issue.locationCode}) - ${isInCity ? '포함' : '제외'}`)
+        return isInCity
+      })
+      
+      console.log('✅ 도시별 필터링된 이슈:', filteredIssues.length, '개')
+      console.log('📍 선택된 도시:', regionName)
+    } else {
+      // 도별 필터링 (기존 로직)
+      const provinceCode = getProvinceCode(regionName)
+      if (!provinceCode) {
+        console.error('❌ 알 수 없는 지역:', regionName)
+        setIssues(allIssues) // 필터링 실패 시 전체 이슈 표시
+        return
+      }
+      
+      console.log('🔍 도 코드:', provinceCode)
+      
+      // 전체 이슈의 locationCode 확인
+      console.log('📍 전체 이슈 locationCode 목록:', allIssues.map(issue => ({
+        id: issue.id,
+        title: issue.title,
+        locationCode: issue.locationCode
+      })))
+      
+      // 해당 도에 속하는 이슈들만 필터링
+      filteredIssues = allIssues.filter(issue => {
+        const isInProvince = issue.locationCode && isLocationInProvince(issue.locationCode, provinceCode)
+        console.log(`🔍 이슈 "${issue.title}" (${issue.locationCode}) - ${isInProvince ? '포함' : '제외'}`)
+        return isInProvince
+      })
+      
+      console.log('✅ 도별 필터링된 이슈:', filteredIssues.length, '개')
+      console.log('📍 선택된 도:', regionName, '코드:', provinceCode)
+    }
+    
+    setIssues(filteredIssues)
+    console.log('📋 최종 필터링된 이슈 목록:', filteredIssues.map(issue => ({
+      id: issue.id,
+      title: issue.title,
+      locationCode: issue.locationCode
+    })))
+  }
+
   // 이슈 데이터 가져오기
   const loadNearbyIssues = async (lat, lng) => {
     try {
       setIsLoadingIssues(true)
-      const issuesData = await fetchNearbyIssues(lat, lng)
-      setAllIssues(issuesData) // 전체 이슈 목록 저장
-      setIssues(issuesData) // 초기에는 모든 이슈 표시
+      
+      // 사용자 ID 가져오기
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        console.error('User ID not found')
+        setIsLoadingIssues(false)
+        return []
+      }
+
+      // 직접 posts API 호출
+      const response = await fetch(`/api/posts?userId=${userId}&sort=latest`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log('📦 Posts API 응답 데이터:', data)
+      
+      if (!Array.isArray(data)) {
+        console.warn('⚠️ API 응답이 배열이 아닙니다')
+        setIsLoadingIssues(false)
+        return []
+      }
+
+      // 백엔드 데이터를 지도용 형식으로 변환
+      const mappedData = data.map(post => {
+        // locationCode를 기반으로 위치 결정
+        const location = post.latitude && post.longitude 
+          ? { lat: post.latitude, lng: post.longitude }
+          : getLocationFromCode(post.locationCode, lat, lng)
+        
+        return {
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          status: post.status,
+          createdAt: post.createdAt,
+          likeCount: post.likeCount || 0,
+          imageUrl: post.imageUrl,
+          locationCode: post.locationCode,
+          latitude: location.lat,
+          longitude: location.lng
+        }
+      })
+
+      setAllIssues(mappedData) // 전체 이슈 목록 저장
+      
+      // 선택된 지역이 있으면 필터링 적용
+      if (selectedRegion) {
+        filterIssuesByRegion(selectedRegion)
+      } else {
+        setIssues(mappedData) // 초기에는 모든 이슈 표시
+      }
+      
       setIsLoadingIssues(false)
-      return issuesData
+      return mappedData
     } catch (error) {
       console.error('이슈 데이터 가져오기 실패:', error)
       setIsLoadingIssues(false)
       return []
+    }
+  }
+
+  // locationCode를 실제 위치로 매핑하는 함수
+  const getLocationFromCode = (locationCode, baseLatitude = 37.5665, baseLongitude = 126.9780) => {
+    const locationMap = {
+      // 주요 도시
+      'SEOUL': { lat: 37.5665, lng: 126.9780 },
+      'BUSAN': { lat: 35.1796, lng: 129.0756 },
+      'DAEGU': { lat: 35.8714, lng: 128.6014 },
+      'INCHEON': { lat: 37.4563, lng: 126.7052 },
+      'GWANGJU': { lat: 35.1595, lng: 126.8526 },
+      'DAEJEON': { lat: 36.3504, lng: 127.3845 },
+      'ULSAN': { lat: 35.5384, lng: 129.3114 },
+      'SEJONG': { lat: 36.4800, lng: 127.2890 },
+      
+      // 구역별 매핑 (서울 기준)
+      '1-1': { lat: 37.5665 + 0.01, lng: 126.9780 + 0.01 }, // 서울 중구
+      '1-2': { lat: 37.5665 + 0.02, lng: 126.9780 + 0.01 }, // 서울 종로구
+      '1-3': { lat: 37.5665 + 0.01, lng: 126.9780 + 0.02 }, // 서울 용산구
+      '2-1': { lat: 37.5665 - 0.01, lng: 126.9780 + 0.01 }, // 서울 성동구
+      '2-2': { lat: 37.5665 - 0.02, lng: 126.9780 + 0.01 }, // 서울 광진구
+      '2-3': { lat: 37.5665 - 0.01, lng: 126.9780 + 0.02 }, // 서울 동대문구
+    }
+
+    // locationCode가 매핑 테이블에 있으면 해당 위치 반환
+    if (locationMap[locationCode]) {
+      return locationMap[locationCode]
+    }
+
+    // 없으면 기본 위치 근처에 랜덤 배치
+    return {
+      lat: baseLatitude + (Math.random() - 0.5) * 0.02,
+      lng: baseLongitude + (Math.random() - 0.5) * 0.02
     }
   }
 
@@ -138,9 +298,22 @@ export default function MapPage() {
       try {
         console.log('🗺️ 지도 생성 시작 - 고속 모드')
         
+        // 선택된 지역에 따라 지도 중심과 줌 설정
+        let centerLat = 37.5665
+        let centerLng = 126.9780
+        let zoomLevel = 11
+        
+        if (selectedRegion && regionCoordinates[selectedRegion]) {
+          const regionCoord = regionCoordinates[selectedRegion]
+          centerLat = regionCoord.lat
+          centerLng = regionCoord.lng
+          zoomLevel = regionCoord.zoom
+          console.log(`📍 선택된 지역 ${selectedRegion}으로 지도 중심 이동:`, regionCoord)
+        }
+        
         const mapOptions = {
-          center: new window.naver.maps.LatLng(37.5665, 126.9780),
-          zoom: 11,
+          center: new window.naver.maps.LatLng(centerLat, centerLng),
+          zoom: zoomLevel,
           mapTypeControl: false,
           zoomControl: false,
           logoControl: false,
@@ -195,6 +368,13 @@ export default function MapPage() {
           updateMarkersVisibility(zoom)
         })
         
+        // 지도 클릭 이벤트 리스너 추가
+        window.naver.maps.Event.addListener(naverMap.current, 'click', (e) => {
+          console.log('🗺️ 지도 클릭:', e.coord)
+          // 지도 클릭 시 바텀시트 닫기
+          setIsBottomSheetExpanded(false)
+        })
+        
         setTimeout(onMapReady, 50)
         
         // 선택된 지역 또는 현재 위치로 이동
@@ -211,9 +391,24 @@ export default function MapPage() {
             
             // 해당 지역의 이슈 가져오기 및 마커 표시
             loadNearbyIssues(regionCoord.lat, regionCoord.lng).then(regionIssues => {
-              addIssueMarkers(regionIssues)
+              // 필터링된 이슈들만 마커로 표시
+              if (selectedRegion) {
+                const filteredIssues = regionIssues.filter(issue => {
+                  if (selectedRegion === '문경시' || selectedRegion === '창원시') {
+                    return issue.locationCode && isLocationInCity(issue.locationCode, selectedRegion)
+                  } else {
+                    const provinceCode = getProvinceCode(selectedRegion)
+                    return provinceCode && issue.locationCode && isLocationInProvince(issue.locationCode, provinceCode)
+                  }
+                })
+                console.log(`📍 ${selectedRegion} 지역 이슈 ${filteredIssues.length}개 마커 표시`)
+                addIssueMarkers(filteredIssues)
+                setIssues(filteredIssues)
+              } else {
+                addIssueMarkers(regionIssues)
+                setIssues(regionIssues)
+              }
               // 바텀시트 자동 확장
-              setIssues(regionIssues)
               setIsBottomSheetExpanded(true)
             })
           } else if (navigator.geolocation && naverMap.current) {
