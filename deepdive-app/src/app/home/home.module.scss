@@ -492,10 +492,12 @@
 .successToast {
   position: fixed;
   bottom: calc(var(--bottom-nav-height) + 20px);
-  left: 20px;
-  right: 20px;
+  left: 16px;
+  right: 16px;
   z-index: 9999;
   animation: slideUp 0.3s ease-out;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
 }
 
 .toastContent {
@@ -509,6 +511,9 @@
   gap: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   font-size: 14px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .toastText {
@@ -557,22 +562,30 @@
 @media (max-width: 768px) {
   .successToast {
     bottom: calc(var(--bottom-nav-height) + 16px);
-    left: 16px;
-    right: 16px;
+    left: 12px;
+    right: 12px;
+    max-width: calc(100vw - 24px);
   }
 
   .toastContent {
-    padding: 14px 18px;
+    padding: 14px 16px;
     gap: 12px;
+    font-size: 13px;
   }
 
   .toastText {
     font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .toastButton {
     padding: 4px 6px;
     font-size: 13px;
+    flex-shrink: 0;
   }
   
   /* 모바일에서 추가 패딩 조정 */
