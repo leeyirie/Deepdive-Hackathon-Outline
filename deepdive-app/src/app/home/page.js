@@ -61,6 +61,16 @@ export default function HomePage() {
           const data = await response.json()
           console.log('🏠 Home posts data:', data)
           
+          // 이미지 URL 디버깅
+          if (data && data.length > 0) {
+            console.log('🖼️ 이미지 URL 디버깅:', data.map(post => ({
+              id: post.id,
+              title: post.title,
+              imageUrl: post.imageUrl,
+              imageUrlType: typeof post.imageUrl
+            })))
+          }
+          
           // 최신순으로 정렬하고 홈에서는 4개만 표시
           const sortedData = (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           const limitedData = sortedData.slice(0, 4)

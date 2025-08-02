@@ -146,7 +146,7 @@ export default function ReportPage() {
         return
       }
 
-      // 이미지 업로드 처리 - 백엔드 파일 업로드 API 사용
+      // 이미지 업로드 처리 - 백엔드로 직접 업로드
       let imageUrls = []
       if (images.length > 0) {
         try {
@@ -156,23 +156,24 @@ export default function ReportPage() {
             uploadFormData.append('files', img.file) // 백엔드 API에 맞춰 'files'로 key 설정
           })
           
-                     const uploadResponse = await fetch('/api/files/upload', {
-             method: 'POST',
-             body: uploadFormData
-           })
+          // 백엔드로 직접 업로드
+          const uploadResponse = await fetch('http://13.124.229.252:8080/files/upload', {
+            method: 'POST',
+            body: uploadFormData
+          })
           
-                     if (uploadResponse.ok) {
-             const uploadedUrls = await uploadResponse.json()
-             imageUrls = uploadedUrls || []
-             console.log('✅ 이미지 업로드 성공:', imageUrls)
-             console.log('📝 업로드된 URL 타입:', typeof imageUrls)
-             console.log('📝 업로드된 URL 배열:', Array.isArray(imageUrls) ? imageUrls : '배열이 아님')
-           } else {
-             const errorText = await uploadResponse.text()
-             console.error('❌ 이미지 업로드 실패:', uploadResponse.status, errorText)
-             // 이미지 업로드 실패 시에도 게시글은 등록
-             imageUrls = []
-           }
+          if (uploadResponse.ok) {
+            const uploadedUrls = await uploadResponse.json()
+            imageUrls = uploadedUrls || []
+            console.log('✅ 이미지 업로드 성공:', imageUrls)
+            console.log('📝 업로드된 URL 타입:', typeof imageUrls)
+            console.log('📝 업로드된 URL 배열:', Array.isArray(imageUrls) ? imageUrls : '배열이 아님')
+          } else {
+            const errorText = await uploadResponse.text()
+            console.error('❌ 이미지 업로드 실패:', uploadResponse.status, errorText)
+            // 이미지 업로드 실패 시에도 게시글은 등록
+            imageUrls = []
+          }
         } catch (error) {
           console.error('❌ 이미지 업로드 오류:', error)
           // 이미지 업로드 오류 시에도 게시글은 등록
@@ -195,7 +196,7 @@ export default function ReportPage() {
                            console.log('📤 제보 등록 요청:', requestData)
         console.log('📝 imageUrl 필드 값:', requestData.imageUrl)
         console.log('📝 imageUrl 타입:', typeof requestData.imageUrl)
-
+ 
        // API 호출
        const response = await fetch('/api/posts', {
          method: 'POST',

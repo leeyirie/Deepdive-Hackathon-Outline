@@ -1,6 +1,7 @@
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Icon from '@/components/icons/Icon'
+import { convertImageUrl } from '@/lib/utils'
 import styles from './IssueCard.module.scss'
 
 export default function IssueCard({ post }) {
@@ -141,7 +142,7 @@ export default function IssueCard({ post }) {
         <div className={styles.issueImage}>
           {/* 백엔드 데이터: post.imageUrl (이미지 URL) */}
           {post?.imageUrl ? (
-            <img src={post.imageUrl} alt={post.title} className={styles.realImage} />
+            <img src={convertImageUrl(post.imageUrl)} alt={post.title} className={styles.realImage} />
           ) : (
             <div className={styles.imagePlaceholder}>📷</div>
           )}

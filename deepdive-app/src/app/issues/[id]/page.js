@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
+import { convertImageUrl } from '@/lib/utils'
 import styles from './issue-detail.module.scss'
 
 export default function IssueDetailPage() {
@@ -356,7 +357,7 @@ export default function IssueDetailPage() {
         {/* 이슈 이미지 */}
         {issue.imageUrl && (
           <section className={styles.issueImage}>
-            <img src={issue.imageUrl} alt={issue.title} />
+            <img src={convertImageUrl(issue.imageUrl)} alt={issue.title} />
           </section>
         )}
 
@@ -466,7 +467,7 @@ export default function IssueDetailPage() {
                 </div>
                 {relatedIssue.imageUrl && (
                   <div className={styles.relatedImage}>
-                    <img src={relatedIssue.imageUrl} alt={relatedIssue.title} />
+                    <img src={convertImageUrl(relatedIssue.imageUrl)} alt={relatedIssue.title} />
                   </div>
                 )}
               </div>
