@@ -405,6 +405,19 @@ function MapContent() {
 
   return (
     <div className={styles.mapContainer}>
+      {/* 상단 헤더 */}
+      <header className={styles.header}>
+        <button className={styles.backButton} onClick={() => router.back()}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <h1 className={styles.title}>
+          {selectedRegion ? `${selectedRegion} 이슈` : '전국 이슈'}
+        </h1>
+        <div className={styles.placeholder}></div>
+      </header>
+
       <div ref={mapRef} className={styles.map} />
       
       {/* 현재 위치 버튼 */}
