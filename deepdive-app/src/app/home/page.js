@@ -11,6 +11,8 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState('home')
   const [selectedRegion, setSelectedRegion] = useState('전체')
   const [posts, setPosts] = useState([])
+  const [allPosts, setAllPosts] = useState([]) // 모든 게시글을 저장할 state
+  const [regionIssueCounts, setRegionIssueCounts] = useState({}) // 지역별 이슈 개수
   const [loading, setLoading] = useState(true)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [newPostId, setNewPostId] = useState(null)
@@ -38,6 +40,59 @@ export default function HomePage() {
     console.log('🔍 관심지역 모달 열기 시도')
     setShowInterestRegionModal(true)
     console.log('✅ showInterestRegionModal 상태:', true)
+  }
+
+  // 지역별 이슈 개수 계산 함수
+  const calculateRegionIssueCounts = (posts) => {
+    const counts = {
+      '강원도': 0,
+      '충청북도': 0,
+      '충청남도': 0,
+      '경상북도': 0,
+      '경상남도': 0,
+      '전라북도': 0,
+      '전라남도': 0,
+      '제주특별자치도': 0
+    }
+
+    posts.forEach(post => {
+      if (post.locationCode) {
+        // locationCode의 첫 번째 숫자로 지역 구분
+        const regionCode = post.locationCode.split('-')[0]
+        
+        switch (regionCode) {
+          case '1':
+            counts['강원도']++
+            break
+          case '2':
+            counts['충청북도']++
+            break
+          case '3':
+            counts['충청남도']++
+            break
+          case '4':
+            counts['경상북도']++
+            break
+          case '5':
+            counts['경상남도']++
+            break
+          case '6':
+            counts['전라북도']++
+            break
+          case '7':
+            counts['전라남도']++
+            break
+          case '8':
+            counts['제주특별자치도']++
+            break
+          default:
+            break
+        }
+      }
+    })
+
+    console.log('📍 지역별 이슈 개수:', counts)
+    return counts
   }
 
   // 지역 클릭 핸들러
@@ -105,7 +160,7 @@ export default function HomePage() {
             })))
           }
           
-          // 최신순으로 정렬하고 홈에서는 4개만 표시
+          // 최신순으로 정렬
           const sortedData = (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           const limitedData = sortedData.slice(0, 4)
           
@@ -113,6 +168,11 @@ export default function HomePage() {
           console.log('📋 Available post IDs:', limitedData.map(post => post.id))
           
           setPosts(limitedData) // 최신 4개 기사만 state에 저장
+          setAllPosts(sortedData) // 모든 게시글 저장
+          
+          // 지역별 이슈 개수 계산
+          const regionCounts = calculateRegionIssueCounts(sortedData)
+          setRegionIssueCounts(regionCounts)
         } else {
           console.error('Failed to fetch posts')
         }
@@ -238,76 +298,92 @@ export default function HomePage() {
                 <>
                   {/* 8개 지방별 원 표시 */}
                   {/* 강원도 (상단 동쪽) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}
-                    onClick={() => handleRegionClick('강원도')}
-                  >
-                    <span className={styles.dotCount}>1</span>
-                  </div>
+                  {regionIssueCounts['강원도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}
+                      onClick={() => handleRegionClick('강원도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['강원도']}</span>
+                    </div>
+                  )}
                   
                   {/* 충북 (중앙 북쪽) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}
-                    onClick={() => handleRegionClick('충청북도')}
-                  >
-                    <span className={styles.dotCount}>4</span>
-                  </div>
+                  {regionIssueCounts['충청북도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}
+                      onClick={() => handleRegionClick('충청북도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['충청북도']}</span>
+                    </div>
+                  )}
                   
                   {/* 충남 (중앙) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}
-                    onClick={() => handleRegionClick('충청남도')}
-                  >
-                    <span className={styles.dotCount}>5</span>
-                  </div>
+                  {regionIssueCounts['충청남도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}
+                      onClick={() => handleRegionClick('충청남도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['충청남도']}</span>
+                    </div>
+                  )}
                   
                   {/* 경북 (동쪽 중앙) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}
-                    onClick={() => handleRegionClick('경상북도')}
-                  >
-                    <span className={styles.dotCount}>1</span>
-                  </div>
+                  {regionIssueCounts['경상북도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}
+                      onClick={() => handleRegionClick('경상북도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['경상북도']}</span>
+                    </div>
+                  )}
                   
                   {/* 경남 (동남쪽) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}
-                    onClick={() => handleRegionClick('경상남도')}
-                  >
-                    <span className={styles.dotCount}>3</span>
-                  </div>
+                  {regionIssueCounts['경상남도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}
+                      onClick={() => handleRegionClick('경상남도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['경상남도']}</span>
+                    </div>
+                  )}
                   
                   {/* 전북 (서쪽 중앙) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}
-                    onClick={() => handleRegionClick('전라북도')}
-                  >
-                    <span className={styles.dotCount}>2</span>
-                  </div>
+                  {regionIssueCounts['전라북도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}
+                      onClick={() => handleRegionClick('전라북도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['전라북도']}</span>
+                    </div>
+                  )}
                   
                   {/* 전남 (서남쪽) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}
-                    onClick={() => handleRegionClick('전라남도')}
-                  >
-                    <span className={styles.dotCount}>3</span>
-                  </div>
+                  {regionIssueCounts['전라남도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}
+                      onClick={() => handleRegionClick('전라남도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['전라남도']}</span>
+                    </div>
+                  )}
                   
                   {/* 제주도 (최남단) */}
-                  <div 
-                    className={styles.regionDot} 
-                    style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}
-                    onClick={() => handleRegionClick('제주특별자치도')}
-                  >
-                    <span className={styles.dotCount}>1</span>
-                  </div>
+                  {regionIssueCounts['제주특별자치도'] > 0 && (
+                    <div 
+                      className={styles.regionDot} 
+                      style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}
+                      onClick={() => handleRegionClick('제주특별자치도')}
+                    >
+                      <span className={styles.dotCount}>{regionIssueCounts['제주특별자치도']}</span>
+                    </div>
+                  )}
                 </>
               )}
               
