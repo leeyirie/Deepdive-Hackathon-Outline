@@ -196,14 +196,44 @@ export default function IssueDetailPage() {
   }
 
   const handleSolve = async () => {
-    // TODO: API 호출로 해결됨 처리
-    setIsSolved(!isSolved)
-    
-    // 햅틱 피드백 (모바일)
-    if (navigator.vibrate) {
-      navigator.vibrate(50)
-    }
+  const userId = localStorage.getItem('userId')
+  if (!userId) {
+    alert('로그인이 필요합니다.')
+    return
   }
+
+  try {
+    const method = isSolved ? 'DELETE' : 'POST'
+    console.log('🔧 해결됐어요 토글 요청:', { method, userId, postId: params.id })
+
+    const response = await fetch('/api/solve', {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: parseInt(userId),
+        postId: parseInt(params.id),
+      }),
+    })
+
+    if (response.ok) {
+      setIsSolved(!isSolved)
+      console.log('✅ 해결됐어요 상태 변경 완료 →', !isSolved)
+
+      if (navigator.vibrate) {
+        navigator.vibrate(50)
+      }
+    } else {
+      console.error('❌ 해결됐어요 요청 실패:', response.status)
+      alert('해결 여부 처리에 실패했습니다.')
+    }
+  } catch (error) {
+    console.error('❌ 해결됐어요 네트워크 오류:', error)
+    alert('네트워크 오류가 발생했습니다.')
+  }
+}
+
 
   const handleShare = async () => {
     try {
