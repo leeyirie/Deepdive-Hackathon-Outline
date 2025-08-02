@@ -1,11 +1,9 @@
-export const dynamic = 'force-dynamic'
-
 export async function POST(request) {
   try {
     const { userId, postId } = await request.json()
     console.log('🔍 해결했어요 등록 요청:', { userId, postId })
 
-    const backendUrl = 'https://13.124.229.252:8080/solve'
+    const backendUrl = 'http://13.124.229.252:8080/solve'
     const response = await fetch(backendUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -30,7 +28,7 @@ export async function DELETE(request) {
     const { userId, postId } = await request.json()
     console.log('🔍 해결했어요 취소 요청:', { userId, postId })
 
-    const backendUrl = 'https://13.124.229.252:8080/solve'
+    const backendUrl = 'http://13.124.229.252:8080/solve'
     const response = await fetch(backendUrl, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },

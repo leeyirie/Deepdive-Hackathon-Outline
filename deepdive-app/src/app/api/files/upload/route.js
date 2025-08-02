@@ -10,7 +10,7 @@ export async function POST(request) {
     console.log('📤 파일 업로드 프록시 요청')
     
     // 백엔드 API 호출
-    const backendResponse = await fetch('https://13.124.229.252:8080/files/upload', {
+    const backendResponse = await fetch('http://13.124.229.252:8080/files/upload', {
       method: 'POST',
       body: formData // FormData를 그대로 전달
     })

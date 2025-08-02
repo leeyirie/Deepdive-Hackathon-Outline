@@ -5,7 +5,7 @@ export async function GET(request, { params }) {
     console.log('🔍 Fetching user info for userId:', userId)
     
     // 백엔드 API 호출
-    const backendUrl = `https://13.124.229.252:8080/auth/me/${userId}`
+    const backendUrl = `http://13.124.229.252:8080/auth/me/${userId}`
     console.log('🔍 Backend URL:', backendUrl)
     
     const response = await fetch(backendUrl, {

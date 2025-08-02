@@ -17,7 +17,7 @@ export async function GET(request, { params }) {
     console.log(`🔍 Fetching AI summary for post ID: ${id}`)
 
     // 백엔드 API 호출 - AI 요약 조회
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'}/posts/${id}/summary`, {
+    const backendResponse = await fetch(`${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts/${id}/summary`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic'
-
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -17,7 +15,7 @@ export async function GET(request) {
     }
     
     // 기존 게시글 조회 API 사용
-    const backendUrl = `https://13.124.229.252:8080/posts?userId=${userId}&sort=${sort}`
+    const backendUrl = `http://13.124.229.252:8080/posts?userId=${userId}&sort=${sort}`
     console.log('🔍 전체 게시글 조회 URL:', backendUrl)
     
     const response = await fetch(backendUrl, {

@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic'
-
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -15,7 +13,7 @@ export async function GET(request) {
     console.log('🔍 Fetching liked posts for userId:', userId)
 
     // 백엔드 API 호출
-            const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'
+    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://13.124.229.252:8080'
     const response = await fetch(`${backendUrl}/posts/liked?userId=${userId}`, {
       method: 'GET',
       headers: {
