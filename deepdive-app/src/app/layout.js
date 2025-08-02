@@ -1,5 +1,6 @@
 import './globals.css'
 import Script from 'next/script'
+import ClientNotificationManager from '@/components/ClientNotificationManager'
 
 export const metadata = {
   title: 'OUTLINE - 보이지 않던 지역 이슈를 드러내다',
@@ -52,6 +53,7 @@ export default function RootLayout({ children }) {
         
         <div className="w-full min-h-screen bg-white relative sm:mx-auto sm:max-w-[440px]" style={{ boxShadow: '0 0 50px rgba(0, 0, 0, 0.15)' }}>
           {children}
+          <ClientNotificationManager />
         </div>
       </body>
     </html>

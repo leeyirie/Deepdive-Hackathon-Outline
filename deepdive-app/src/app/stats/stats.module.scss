@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 16px 18px;
   background-color: white;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
@@ -50,7 +50,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 16px calc(var(--bottom-nav-height) + 20px) 16px; // 하단 네비게이션 공간 확보
+  padding: 20px 18px calc(var(--bottom-nav-height) + 20px) 18px; // 하단 네비게이션 공간 확보
   box-sizing: border-box;
   /* 모바일 스크롤 최적화 */
   -webkit-overflow-scrolling: touch;

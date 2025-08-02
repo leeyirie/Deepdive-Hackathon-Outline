@@ -141,7 +141,7 @@
 
 // 이슈 정보
 .issueInfo {
-  padding: 16px;
+  padding: 16px 18px;
 }
 
 .title {
@@ -175,7 +175,7 @@
 // 이슈 이미지
 .issueImage {
   width: 100%;
-  padding: 0 16px;
+  padding: 0 18px;
   margin-bottom: 20px;
   box-sizing: border-box;
   
@@ -192,7 +192,7 @@
 
 // AI 요약
 .aiSummary {
-  margin: 20px 16px 10px 16px;
+  margin: 20px 18px 10px 18px;
   padding: 16px;
   background-color: #f8f9fa;
   border-radius: 12px;
@@ -308,7 +308,7 @@
 
 // 댓글 섹션
 .commentsSection {
-  padding: 16px;
+  padding: 16px 18px;
   border-top: 8px solid #f8f9fa;
   width: 100%;
   box-sizing: border-box;
@@ -422,7 +422,7 @@
 
 // 관련 이슈
 .relatedIssues {
-  padding: 16px;
+  padding: 16px 18px;
   border-top: 8px solid #f8f9fa;
 }
 
@@ -504,7 +504,7 @@
 
 // 메인 이슈 이미지 섹션
 .issueImage {
-  margin: 16px;
+  margin: 16px 18px;
   
   img {
     width: 100%;

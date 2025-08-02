@@ -17,7 +17,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 16px 18px;
   border-bottom: 1px solid #f3f4f6;
   background-color: white;
   z-index: 10;
@@ -56,7 +56,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 16px 20px 16px; // 하단 여백 추가
+  padding: 20px 18px 20px 18px; // 하단 여백 추가
   display: flex;
   flex-direction: column;
   gap: 20px;

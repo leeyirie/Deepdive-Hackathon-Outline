@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
 import IssueCard from '@/components/IssueCard'
+import { fetchNotifications } from '@/lib/services/notifications'
 import styles from './home.module.scss'
 
 export default function HomePage() {
@@ -11,6 +12,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [newPostId, setNewPostId] = useState(null)
+  const [notificationCount, setNotificationCount] = useState(0)
   const router = useRouter()
 
   // 성공 토스트 확인
@@ -90,6 +92,21 @@ export default function HomePage() {
     }
 
     fetchPosts() // 컴포넌트 마운트 시 한 번 실행
+    
+    // 알림 개수 가져오기
+    const fetchNotificationCount = async () => {
+      try {
+        const userId = localStorage.getItem('userId')
+        if (!userId) return
+        
+        const data = await fetchNotifications(userId)
+        setNotificationCount(data?.length || 0)
+      } catch (error) {
+        console.error('알림 개수 가져오기 오류:', error)
+      }
+    }
+    
+    fetchNotificationCount()
   }, [])
 
   return (
@@ -101,10 +118,14 @@ export default function HomePage() {
           <button className={styles.iconButton} onClick={() => router.push('/search')}>
             <Icon name="search" size={24} />
           </button>
-          <button className={styles.iconButton}>
+          <button className={styles.iconButton} onClick={() => router.push('/notifications')}>
             <div className={styles.notificationIcon}>
               <Icon name="notification-true" size={24} />
-              <div className={styles.notificationDot}></div>
+              {notificationCount > 0 && (
+                <div className={styles.notificationBadge}>
+                  {notificationCount > 99 ? '99+' : notificationCount}
+                </div>
+              )}
             </div>
           </button>
         </div>
@@ -198,7 +219,7 @@ export default function HomePage() {
          </button>
                                      <button 
            className={`${styles.navItem} ${activeTab === 'report' ? styles.active : ''}`}
-           onClick={() => {
+           onClick={() => { 
              setActiveTab('report')
              router.push('/report')
            }}
