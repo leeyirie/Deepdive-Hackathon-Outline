@@ -3,7 +3,28 @@ import { useState, useEffect, useRef } from 'react'
 import Icon from '@/components/icons/Icon'
 import styles from './MapLocationModal.module.scss'
 
-// 주소를 시/구/동까지만 파싱하는 함수
+// 주소를 시/군까지만 파싱하는 함수 (locationCode용)
+const parseLocationCode = (fullAddress) => {
+  if (!fullAddress) return ''
+  
+  console.log('🔍 locationCode 파싱할 주소:', fullAddress)
+  
+  // 정규식을 사용한 시/군 추출
+  const cityMatch = fullAddress.match(/([가-힣]+시)/)
+  const countyMatch = fullAddress.match(/([가-힣]+군)/)
+  
+  const city = cityMatch ? cityMatch[1] : ''
+  const county = countyMatch ? countyMatch[1] : ''
+  
+  console.log('🔍 시/군 매칭 결과:', { city, county })
+  
+  // 시 또는 군 중 하나만 반환
+  const result = city || county
+  console.log('🎯 locationCode 결과:', result)
+  return result || 'CUSTOM'
+}
+
+// 주소를 시/구/동까지만 파싱하는 함수 (화면 표시용)
 const parseAddress = (fullAddress) => {
   if (!fullAddress) return ''
   

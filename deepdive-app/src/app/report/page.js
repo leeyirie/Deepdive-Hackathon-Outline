@@ -91,10 +91,31 @@ export default function ReportPage() {
 
   // 지도에서 위치 선택 핸들러
   const handleMapLocationSelect = async (lat, lng, address) => {
+    // 주소에서 도/시/군 추출
+    const provinceMatch = address.match(/([가-힣]+도)/)
+    const cityMatch = address.match(/([가-힣]+시)/)
+    const countyMatch = address.match(/([가-힣]+군)/)
+    
+    const province = provinceMatch ? provinceMatch[1] : ''
+    const city = cityMatch ? cityMatch[1] : ''
+    const county = countyMatch ? countyMatch[1] : ''
+    
+    // 도 + 시/군 조합 (예: "전북 전주시", "경북 포항시")
+    let locationCode = ''
+    if (province && (city || county)) {
+      locationCode = `${province} ${city || county}`
+    } else if (city || county) {
+      locationCode = city || county
+    } else {
+      locationCode = 'CUSTOM'
+    }
+    
+    console.log('📍 선택된 위치:', { address, locationCode })
+    
     setFormData(prev => ({
       ...prev,
       location: address,
-      locationCode: 'CUSTOM',
+      locationCode: locationCode,
       latitude: lat,
       longitude: lng
     }))
@@ -135,20 +156,23 @@ export default function ReportPage() {
             uploadFormData.append('files', img.file) // 백엔드 API에 맞춰 'files'로 key 설정
           })
           
-          const uploadResponse = await fetch('http://13.124.229.252:8080/files/upload', {
-            method: 'POST',
-            body: uploadFormData
-          })
+                     const uploadResponse = await fetch('/api/files/upload', {
+             method: 'POST',
+             body: uploadFormData
+           })
           
-          if (uploadResponse.ok) {
-            const uploadedUrls = await uploadResponse.json()
-            imageUrls = uploadedUrls || []
-            console.log('✅ 이미지 업로드 성공:', imageUrls)
-          } else {
-            console.error('❌ 이미지 업로드 실패:', uploadResponse.status)
-            // 이미지 업로드 실패 시에도 게시글은 등록
-            imageUrls = []
-          }
+                     if (uploadResponse.ok) {
+             const uploadedUrls = await uploadResponse.json()
+             imageUrls = uploadedUrls || []
+             console.log('✅ 이미지 업로드 성공:', imageUrls)
+             console.log('📝 업로드된 URL 타입:', typeof imageUrls)
+             console.log('📝 업로드된 URL 배열:', Array.isArray(imageUrls) ? imageUrls : '배열이 아님')
+           } else {
+             const errorText = await uploadResponse.text()
+             console.error('❌ 이미지 업로드 실패:', uploadResponse.status, errorText)
+             // 이미지 업로드 실패 시에도 게시글은 등록
+             imageUrls = []
+           }
         } catch (error) {
           console.error('❌ 이미지 업로드 오류:', error)
           // 이미지 업로드 오류 시에도 게시글은 등록
@@ -156,28 +180,30 @@ export default function ReportPage() {
         }
       }
 
-      // API 요청 데이터 구성
-      const requestData = {
-        userId: parseInt(userId),
-        title: formData.title.trim(),
-        content: formData.content.trim(),
-        imageUrl: imageUrls.join(','), // 콤마로 구분된 문자열 (백엔드 API 스키마에 맞춤)
-        locationCode: formData.locationCode,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        status: 0 // 기본 상태
-      }
+             // API 요청 데이터 구성
+       const requestData = {
+         userId: parseInt(userId),
+         title: formData.title.trim(),
+         content: formData.content.trim(),
+         imageUrl: imageUrls.join(','), // 백엔드 API 필드명에 맞춤 (imageUrl)
+         locationCode: formData.locationCode,
+         latitude: formData.latitude,
+         longitude: formData.longitude,
+         status: 0 // 기본 상태
+       }
 
-      console.log('📤 제보 등록 요청:', requestData)
+                           console.log('📤 제보 등록 요청:', requestData)
+        console.log('📝 imageUrl 필드 값:', requestData.imageUrl)
+        console.log('📝 imageUrl 타입:', typeof requestData.imageUrl)
 
-      // API 호출
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      })
+       // API 호출
+       const response = await fetch('/api/posts', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(requestData)
+       })
 
       if (response.ok) {
         const result = await response.json()
