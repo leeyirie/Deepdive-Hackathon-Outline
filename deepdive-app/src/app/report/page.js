@@ -24,16 +24,6 @@ export default function ReportPage() {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
-  // 파일을 Base64로 변환하는 함수
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => resolve(reader.result)
-      reader.onerror = error => reject(error)
-    })
-  }
-
   // 폼 입력 핸들러
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -135,18 +125,33 @@ export default function ReportPage() {
         return
       }
 
-      // 이미지 처리 - Base64로 인코딩
+      // 이미지 업로드 처리 - 백엔드 파일 업로드 API 사용
       let imageUrls = []
       if (images.length > 0) {
         try {
-          // 이미지 파일들을 Base64로 인코딩
-          for (const img of images) {
-            const base64 = await fileToBase64(img.file)
-            imageUrls.push(base64)
+          // FormData를 사용하여 이미지 파일들을 백엔드로 전송
+          const uploadFormData = new FormData()
+          images.forEach((img) => {
+            uploadFormData.append('files', img.file) // 백엔드 API에 맞춰 'files'로 key 설정
+          })
+          
+          const uploadResponse = await fetch('http://13.124.229.252:8080/files/upload', {
+            method: 'POST',
+            body: uploadFormData
+          })
+          
+          if (uploadResponse.ok) {
+            const uploadedUrls = await uploadResponse.json()
+            imageUrls = uploadedUrls || []
+            console.log('✅ 이미지 업로드 성공:', imageUrls)
+          } else {
+            console.error('❌ 이미지 업로드 실패:', uploadResponse.status)
+            // 이미지 업로드 실패 시에도 게시글은 등록
+            imageUrls = []
           }
-          console.log('✅ 이미지 Base64 인코딩 완료:', imageUrls.length)
         } catch (error) {
-          console.error('❌ 이미지 인코딩 오류:', error)
+          console.error('❌ 이미지 업로드 오류:', error)
+          // 이미지 업로드 오류 시에도 게시글은 등록
           imageUrls = []
         }
       }
