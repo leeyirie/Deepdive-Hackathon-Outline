@@ -82,7 +82,7 @@ export async function POST(request) {
       userId: parseInt(userId),
       title: title.trim(),
       content: content.trim(),
-      imageUrl: imageUrl || [],
+      imageUrl: Array.isArray(imageUrl) ? imageUrl : (imageUrl ? [imageUrl] : []),
       locationCode: locationCode || '',
       regionName: regionName || '',
       latitude: latitude ? parseFloat(latitude) : null,
@@ -94,7 +94,11 @@ export async function POST(request) {
     console.log('📤 백엔드 URL:', `${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts`)
 
     // 백엔드 API 호출
-    const backendResponse = await fetch(`${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts`, {
+    const apiUrl = `${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts`
+    console.log('🌐 백엔드 API URL:', apiUrl)
+    console.log('📤 백엔드로 보낼 JSON:', JSON.stringify(backendData, null, 2))
+    
+    const backendResponse = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

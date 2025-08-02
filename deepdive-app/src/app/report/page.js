@@ -173,9 +173,13 @@ export default function ReportPage() {
          status: 0 // 기본 상태
        }
 
-                           console.log('📤 제보 등록 요청:', requestData)
-        console.log('📝 imageUrl 필드 값:', requestData.imageUrl)
-        console.log('📝 imageUrl 타입:', typeof requestData.imageUrl)
+       console.log('📤 제보 등록 요청:', requestData)
+       console.log('📝 imageUrl 필드 값:', requestData.imageUrl)
+       console.log('📝 imageUrl 타입:', typeof requestData.imageUrl)
+       console.log('📝 imageUrl 배열 여부:', Array.isArray(requestData.imageUrl))
+       console.log('📝 formData.location:', formData.location)
+       console.log('📝 formData.latitude:', formData.latitude)
+       console.log('📝 formData.longitude:', formData.longitude)
  
        // API 호출
        const response = await fetch('/api/posts', {
@@ -201,7 +205,13 @@ export default function ReportPage() {
         
         router.push('/home')
       } else {
-        throw new Error(`제보 등록 실패: ${response.status}`)
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.error('❌ 제보 등록 실패:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        })
+        throw new Error(`제보 등록 실패: ${response.status} - ${errorData.error || 'Unknown error'}`)
       }
 
     } catch (error) {
