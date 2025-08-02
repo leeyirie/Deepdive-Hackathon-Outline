@@ -9,7 +9,11 @@
       "destination": "/issues/[id]"
     },
     {
-      "source": "/((?!api|_next/static|_next/image|favicon.ico|issues).*)",
+      "source": "/donation/:id*",
+      "destination": "/donation/[id]"
+    },
+    {
+      "source": "/((?!api|_next/static|_next/image|favicon.ico|issues|donation).*)",
       "destination": "/"
     }
   ],
