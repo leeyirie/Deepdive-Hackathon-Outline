@@ -141,10 +141,12 @@ export default function IssueCard({ post }) {
         </div>
         <div className={styles.issueImage}>
           {/* 백엔드 데이터: post.imageUrl (이미지 URL) */}
-          {post?.imageUrl ? (
+          {post?.imageUrl && typeof post.imageUrl === 'string' && post.imageUrl.trim() !== '' ? (
             <img src={convertImageUrl(post.imageUrl)} alt={post.title} className={styles.realImage} />
           ) : (
-            <div className={styles.imagePlaceholder}>📷</div>
+            <div className={styles.imagePlaceholder}>
+              <Icon name="camera" size={32} />
+            </div>
           )}
         </div>
       </div>

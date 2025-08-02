@@ -57,8 +57,9 @@ export default function ReportPage() {
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files)
     
-    files.forEach(file => {
-      if (images.length >= 3) return
+    // 첫 번째 파일만 처리 (1개만 허용)
+    if (files.length > 0 && images.length === 0) {
+      const file = files[0]
       
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -69,14 +70,11 @@ export default function ReportPage() {
           name: file.name
         }
         
-        setImages(prev => {
-          if (prev.length >= 3) return prev
-          setHasUnsavedChanges(true)
-          return [...prev, newImage]
-        })
+        setImages([newImage]) // 기존 이미지 대체
+        setHasUnsavedChanges(true)
       }
       reader.readAsDataURL(file)
-    })
+    }
     
     // input 초기화
     event.target.value = ''
@@ -291,14 +289,14 @@ export default function ReportPage() {
         {/* 이미지 업로드 */}
         <div className={styles.inputGroup}>
           <div className={styles.imageUploadSection}>
-            <button
-              className={styles.imageUploadButton}
-              onClick={() => fileInputRef.current?.click()}
-              disabled={images.length >= 3}
-            >
-              <Icon name="camera" size={24} />
-              <span>{images.length}/3</span>
-            </button>
+                         <button
+               className={styles.imageUploadButton}
+               onClick={() => fileInputRef.current?.click()}
+               disabled={images.length >= 1}
+             >
+               <Icon name="camera" size={24} />
+               <span>{images.length}/1</span>
+             </button>
             
             {images.map((image) => (
               <div key={image.id} className={styles.imagePreview}>
@@ -313,14 +311,13 @@ export default function ReportPage() {
             ))}
           </div>
           
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className={styles.hiddenFileInput}
-          />
+                     <input
+             ref={fileInputRef}
+             type="file"
+             accept="image/*"
+             onChange={handleImageUpload}
+             className={styles.hiddenFileInput}
+           />
         </div>
       </main>
 

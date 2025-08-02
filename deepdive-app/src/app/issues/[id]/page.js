@@ -355,7 +355,7 @@ export default function IssueDetailPage() {
         </section>
 
         {/* 이슈 이미지 */}
-        {issue.imageUrl && (
+        {issue.imageUrl && typeof issue.imageUrl === 'string' && issue.imageUrl.trim() !== '' && (
           <section className={styles.issueImage}>
             <img src={convertImageUrl(issue.imageUrl)} alt={issue.title} />
           </section>
@@ -461,11 +461,11 @@ export default function IssueDetailPage() {
               >
                 <div className={styles.relatedContent}>
                   <h4 className={styles.relatedItemTitle}>{relatedIssue.title}</h4>
-                                      <p className={styles.relatedItemMeta}>
-                      {relatedIssue.locationCode || '위치 정보 없음'} · {formatTimeAgo(relatedIssue.createdAt)}
-                    </p>
+                  <p className={styles.relatedItemMeta}>
+                    {relatedIssue.locationCode || '위치 정보 없음'} · {formatTimeAgo(relatedIssue.createdAt)}
+                  </p>
                 </div>
-                {relatedIssue.imageUrl && (
+                {relatedIssue.imageUrl && typeof relatedIssue.imageUrl === 'string' && relatedIssue.imageUrl.trim() !== '' && (
                   <div className={styles.relatedImage}>
                     <img src={convertImageUrl(relatedIssue.imageUrl)} alt={relatedIssue.title} />
                   </div>
