@@ -6,12 +6,12 @@ import styles from './stats.module.scss'
 
 export default function StatsPage() {
   const [selectedYear, setSelectedYear] = useState('2025년')
-  const [selectedRegion, setSelectedRegion] = useState('경남')
+  const [selectedRegion, setSelectedRegion] = useState('경상남도')
   const [showRegionDropdown, setShowRegionDropdown] = useState(false)
   const [activeTab, setActiveTab] = useState('stats')
   const router = useRouter()
 
-  const regions = ['전체', '강원도', '충청북도', '충청남도', '전라북도', '전라남도', '경상북도', '경상남도', '제주특별자치도']
+  const regions = ['전체', '서울특별시','경기도', '인천광역시', '대전광역시', '대구광역시', '광주광역시', '부산광역시', '울산광역시', '세종특별자치시', '강원도', '충청북도', '충청남도', '전라북도', '전라남도', '경상북도', '경상남도', '제주특별자치도']
   
   const monthlyData = [
     { month: '1월', value: 15, height: 35 },
