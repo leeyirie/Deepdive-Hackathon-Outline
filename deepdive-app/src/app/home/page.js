@@ -64,28 +64,29 @@ export default function HomePage() {
           case '1':
             counts['강원도']++
             break
-          case '2':
+          case '3':
             counts['충청북도']++
             break
-          case '3':
+          case '4':
             counts['충청남도']++
             break
-          case '4':
+          case '12':
             counts['경상북도']++
             break
-          case '5':
+          case '13':
             counts['경상남도']++
             break
-          case '6':
+          case '7':
             counts['전라북도']++
             break
-          case '7':
+          case '8':
             counts['전라남도']++
             break
-          case '8':
+          case '14':
             counts['제주특별자치도']++
             break
           default:
+            console.log('❓ 알 수 없는 지역 코드:', regionCode, 'from', post.locationCode)
             break
         }
       }
@@ -298,92 +299,76 @@ export default function HomePage() {
                 <>
                   {/* 8개 지방별 원 표시 */}
                   {/* 강원도 (상단 동쪽) */}
-                  {regionIssueCounts['강원도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}
-                      onClick={() => handleRegionClick('강원도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['강원도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}
+                    onClick={() => handleRegionClick('강원도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['강원도']}</span>
+                  </div>
                   
                   {/* 충북 (중앙 북쪽) */}
-                  {regionIssueCounts['충청북도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}
-                      onClick={() => handleRegionClick('충청북도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['충청북도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}
+                    onClick={() => handleRegionClick('충청북도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['충청북도']}</span>
+                  </div>
                   
                   {/* 충남 (중앙) */}
-                  {regionIssueCounts['충청남도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}
-                      onClick={() => handleRegionClick('충청남도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['충청남도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}
+                    onClick={() => handleRegionClick('충청남도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['충청남도']}</span>
+                  </div>
                   
                   {/* 경북 (동쪽 중앙) */}
-                  {regionIssueCounts['경상북도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}
-                      onClick={() => handleRegionClick('경상북도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['경상북도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}
+                    onClick={() => handleRegionClick('경상북도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['경상북도']}</span>
+                  </div>
                   
                   {/* 경남 (동남쪽) */}
-                  {regionIssueCounts['경상남도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}
-                      onClick={() => handleRegionClick('경상남도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['경상남도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}
+                    onClick={() => handleRegionClick('경상남도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['경상남도']}</span>
+                  </div>
                   
                   {/* 전북 (서쪽 중앙) */}
-                  {regionIssueCounts['전라북도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}
-                      onClick={() => handleRegionClick('전라북도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['전라북도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}
+                    onClick={() => handleRegionClick('전라북도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['전라북도']}</span>
+                  </div>
                   
                   {/* 전남 (서남쪽) */}
-                  {regionIssueCounts['전라남도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}
-                      onClick={() => handleRegionClick('전라남도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['전라남도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}
+                    onClick={() => handleRegionClick('전라남도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['전라남도']}</span>
+                  </div>
                   
                   {/* 제주도 (최남단) */}
-                  {regionIssueCounts['제주특별자치도'] > 0 && (
-                    <div 
-                      className={styles.regionDot} 
-                      style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}
-                      onClick={() => handleRegionClick('제주특별자치도')}
-                    >
-                      <span className={styles.dotCount}>{regionIssueCounts['제주특별자치도']}</span>
-                    </div>
-                  )}
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}
+                    onClick={() => handleRegionClick('제주특별자치도')}
+                  >
+                    <span className={styles.dotCount}>{regionIssueCounts['제주특별자치도']}</span>
+                  </div>
                 </>
               )}
               
@@ -443,40 +428,46 @@ export default function HomePage() {
 
                  {/* 재난 기부 현황 보기 섹션 */}
                  <div className={styles.sectionHeader}>
-             <h2>재난 기부 현황 보기</h2>
-           </div>
-         <div className={styles.donationSection}>
-          
-          
-          <div className={styles.donationCard}>
-            <div className={styles.donationImage}>
-              <img 
-                src="/img/rain.png"
-                alt="충남 폭우 피해" 
-                className={styles.realImage}
-              />
-            </div>
-            
-            <div className={styles.donationContent}>
-              <div className={styles.donationTag}>
-                <span>♥ 기부중</span>
-              </div>
-              <h3>충남 폭우 피해자 기부 모음</h3>
-              <p>충남 폭우 피해 주민을 위한 긴급 모금에 함께해 주세요.</p>
-              <div className={styles.donationFoundation}>임병준 재단</div>
-              
-              <div className={styles.donationProgress}>
-                <div className={styles.progressBar}>
-                  <div className={styles.progressFill} style={{ width: '33%' }}></div>
-                </div>
-                <div className={styles.progressText}>
-                  <span>300만원 목표</span>
-                  <span className={styles.progressPercent}>33%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                   <h2>재난 기부 현황 보기</h2>
+                   <button 
+                     className={styles.moreButton}
+                     onClick={() => router.push('/donation/1')}
+                   >
+                     더보기
+                   </button>
+                 </div>
+                 <div className={styles.donationSection}>
+                   
+                   
+                    <div className={styles.donationCard}>
+                      <div className={styles.donationImage}>
+                        <img 
+                          src="/img/rain.png"
+                          alt="충남 폭우 피해" 
+                          className={styles.realImage}
+                        />
+                      </div>
+                      
+                      <div className={styles.donationContent}>
+                        <div className={styles.donationTag}>
+                          <span>♥ 기부중</span>
+                        </div>
+                        <h3>충남 폭우 피해자 기부 모음</h3>
+                        <p>충남 폭우 피해 주민을 위한 긴급 모금에 함께해 주세요.</p>
+                        <div className={styles.donationFoundation}>임병준 재단</div>
+                        
+                        <div className={styles.donationProgress}>
+                          <div className={styles.progressBar}>
+                            <div className={styles.progressFill} style={{ width: '33%' }}></div>
+                          </div>
+                          <div className={styles.progressText}>
+                            <span>300만원 목표</span>
+                            <span className={styles.progressPercent}>33%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
       </main>
 
       {/* 하단 네비게이션 */}

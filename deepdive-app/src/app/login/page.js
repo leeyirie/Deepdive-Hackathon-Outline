@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from './login.module.scss'
+import Icon from '@/components/icons/Icon'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -54,6 +55,10 @@ export default function LoginPage() {
     <div className={styles.loginContainer}>
       {/* OUTLINE + 설명 - 화면 중앙 */}
       <div className={styles.outlineSection}>
+          {/*다크 */}
+       <div>
+          <Icon name="logo-dark" size={80} color="#262E39" />
+        </div>
         <h1 className={styles.outlineTitle}>OUTLINE</h1>
         <p className={styles.outlineDescription}>보이지 않던 지역 이슈를 드러내다</p>
       </div>

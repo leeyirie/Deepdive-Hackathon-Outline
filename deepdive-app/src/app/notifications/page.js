@@ -21,9 +21,27 @@ export default function NotificationsPage() {
           return
         }
 
-        const data = await fetchNotifications(userId)
-        console.log('🔔 알림 데이터:', data)
-        setNotifications(data || [])
+        // 임시 데이터 (실제로는 API에서 가져올 예정)
+        const mockNotifications = [
+          {
+            id: 1,
+            message: "제보하신 \"경북 안동 대형 산불\" 관련 내용이 실제 정책에 반영되었습니다.",
+            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2시간 전
+          },
+          {
+            id: 2,
+            message: "제보하신 \"강원 춘천 정전\" 관련 내용이 기관에 제보되었습니다.",
+            createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000) // 5시간 전
+          },
+          {
+            id: 3,
+            message: "제보하신 \"전북 전주 질산 누출\" 이슈가 해결되었습니다.",
+            createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000) // 5시간 전
+          }
+        ]
+
+        console.log('🔔 알림 데이터:', mockNotifications)
+        setNotifications(mockNotifications)
       } catch (error) {
         console.error('알림 로딩 오류:', error)
         setError('알림을 불러오는데 실패했습니다.')

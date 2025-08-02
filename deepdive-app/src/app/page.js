@@ -1,5 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import Icon from '@/components/icons/Icon'
 
 export default function Home() {
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function Home() {
         height: '100dvh', // dynamic viewport height
         backgroundColor: '#262E39',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         touchAction: 'manipulation', // 터치 최적화
@@ -27,6 +29,11 @@ export default function Home() {
         WebkitOverflowScrolling: 'touch' // iOS 스크롤 최적화
       }}
     >
+
+               {/* 화이트 로고 아이콘 */}
+        <div style={{ marginBottom: '1rem' }}>
+           <Icon name="logo" size={80} color="white" />
+         </div>
       <h1 
         className="select-none"
         style={{ 

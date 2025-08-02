@@ -1,0 +1,351 @@
+.donationContainer {
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 16px 18px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #374151;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: #f3f4f6;
+  }
+}
+
+.title {
+  margin: 0 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 18px;
+  padding-bottom: 100px; // 기부하기 버튼 공간 확보
+}
+
+.titleSection {
+  margin-bottom: 20px;
+}
+
+.donationTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.locationInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.imageSection {
+  margin-bottom: 20px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  object-fit: contain;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.mainImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageSource {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.imageIndicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &.active {
+    background-color: white;
+  }
+}
+
+.descriptionSection {
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #111827;
+  margin: 0;
+}
+
+.divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 20px 0;
+}
+
+.commentsSection {
+  margin-bottom: 20px;
+}
+
+.commentsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.commentForm {
+  margin-bottom: 16px;
+}
+
+.commentInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9fafb;
+  
+  &::placeholder {
+    color: #9ca3af;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: white;
+  }
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commentItem {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.userAvatar {
+  width: 24px;
+  height: 24px;
+  background-color: #9ca3af;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.commentTime {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.commentContent {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #111827;
+  margin: 0;
+}
+
+.progressSection {
+  margin-bottom: 20px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #f97316; // 오렌지색
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progressInfo {
+  text-align: center;
+}
+
+.progressText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.donateButtonContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 18px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  z-index: 10;
+}
+
+.donateButton {
+  width: 100%;
+  padding: 16px;
+  background-color: #374151;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: #1f2937;
+  }
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: #6b7280;
+  
+  p {
+    margin: 16px 0 0 0;
+    font-size: 16px;
+  }
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+  
+  p {
+    margin: 0 0 24px 0;
+    font-size: 16px;
+  }
+  
+  .backButton {
+    background: #262E39;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background: #1a202c;
+    }
+  }
+}
+
+// 반응형 디자인
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 16px;
+    padding-bottom: 100px;
+  }
+  
+  .donationTitle {
+    font-size: 18px;
+  }
+  
+  .imageContainer {
+    height: 200px;
+
+  }
+  
+  .description {
+    font-size: 15px;
+  }
+} 

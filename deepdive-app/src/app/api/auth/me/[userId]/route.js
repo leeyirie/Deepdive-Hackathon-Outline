@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 export async function GET(request, { params }) {
   try {
     const { userId } = params

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 export async function POST(request) {
   try {
     const { userId, postId } = await request.json()

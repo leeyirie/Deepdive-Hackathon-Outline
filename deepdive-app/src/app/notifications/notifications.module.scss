@@ -49,10 +49,8 @@
   background: white;
   border-radius: 12px;
   padding: 16px 18px;
+  margin-bottom: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   
   &:hover {
@@ -62,8 +60,7 @@
 }
 
 .notificationContent {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 
 .notificationMessage {

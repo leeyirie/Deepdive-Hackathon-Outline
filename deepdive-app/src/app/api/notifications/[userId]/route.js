@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const API_BASE_URL = process.env.API_BASE_URL || 'http://13.124.229.252:8080'
 
 export async function GET(request, { params }) {
