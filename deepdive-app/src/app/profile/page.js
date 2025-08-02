@@ -241,11 +241,14 @@ export default function ProfilePage() {
           <span>제보</span>
         </button>
         <button 
-          className={`${styles.navItem} ${activeTab === 'favorites' ? styles.active : ''}`}
-          onClick={() => setActiveTab('favorites')}
+          className={`${styles.navItem} ${activeTab === 'community' ? styles.active : ''}`}
+          onClick={() => {
+            setActiveTab('community')
+            router.push('/community')
+          }}
         >
-          <Icon name="favorite-false" size={24} />
-          <span>관심 지역</span>
+          <Icon name={activeTab === 'community' ? 'location' : 'location'} size={24} />
+          <span>커뮤니티</span>
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}

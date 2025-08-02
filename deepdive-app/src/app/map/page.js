@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Script from 'next/script'
 import IssueCard from '@/components/IssueCard'
 import { fetchNearbyIssues } from '@/lib/services/issues'
@@ -10,6 +10,7 @@ export default function MapPage() {
   const mapRef = useRef(null)
   const naverMap = useRef(null)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [needBackupScript, setNeedBackupScript] = useState(false)
   const [issues, setIssues] = useState([])
@@ -19,6 +20,29 @@ export default function MapPage() {
   const [currentLocation, setCurrentLocation] = useState(null)
   const [markers, setMarkers] = useState([])
   const [currentZoom, setCurrentZoom] = useState(12)
+  const [selectedRegion, setSelectedRegion] = useState('') // 선택된 지역
+
+  // 지역별 좌표 정보
+  const regionCoordinates = {
+    '강원도': { lat: 37.8228, lng: 128.1555, zoom: 8 },
+    '충청북도': { lat: 36.8, lng: 127.7, zoom: 8 },
+    '충청남도': { lat: 36.5, lng: 126.8, zoom: 8 },
+    '경상북도': { lat: 36.5, lng: 128.5, zoom: 8 },
+    '경상남도': { lat: 35.5, lng: 128.2, zoom: 8 },
+    '전라북도': { lat: 35.8, lng: 127.1, zoom: 8 },
+    '전라남도': { lat: 34.8, lng: 126.8, zoom: 8 },
+    '제주특별자치도': { lat: 33.5, lng: 126.5, zoom: 10 }
+  }
+
+  // URL 파라미터에서 지역 정보 가져오기
+  useEffect(() => {
+    const region = searchParams.get('region')
+    console.log('🔍 URL 파라미터 확인:', { region, searchParams: searchParams.toString() })
+    if (region) {
+      setSelectedRegion(region)
+      console.log('📍 선택된 지역:', region)
+    }
+  }, [searchParams])
 
   // 이슈 데이터 가져오기
   const loadNearbyIssues = async (lat, lng) => {
@@ -173,9 +197,27 @@ export default function MapPage() {
         
         setTimeout(onMapReady, 50)
         
-        // 현재 위치 가져오기 및 이슈 표시 (더 빠르게)
+        // 선택된 지역 또는 현재 위치로 이동
         setTimeout(() => {
-          if (navigator.geolocation && naverMap.current) {
+          if (selectedRegion && regionCoordinates[selectedRegion] && naverMap.current) {
+            // 선택된 지역으로 이동
+            const regionCoord = regionCoordinates[selectedRegion]
+            const regionPosition = new window.naver.maps.LatLng(regionCoord.lat, regionCoord.lng)
+            
+            console.log(`📍 초기화 시 선택된 지역으로 이동: ${selectedRegion}`, regionCoord)
+            
+            naverMap.current.setCenter(regionPosition)
+            naverMap.current.setZoom(regionCoord.zoom)
+            
+            // 해당 지역의 이슈 가져오기 및 마커 표시
+            loadNearbyIssues(regionCoord.lat, regionCoord.lng).then(regionIssues => {
+              addIssueMarkers(regionIssues)
+              // 바텀시트 자동 확장
+              setIssues(regionIssues)
+              setIsBottomSheetExpanded(true)
+            })
+          } else if (navigator.geolocation && naverMap.current) {
+            // 현재 위치 사용
             navigator.geolocation.getCurrentPosition(
               async (position) => {
                 console.log('📍 현재 위치 적용')
@@ -256,6 +298,27 @@ export default function MapPage() {
       initializeMap()
     }
   }, [scriptLoaded])
+
+  // 선택된 지역이 변경될 때 지도 위치 업데이트
+  useEffect(() => {
+    if (scriptLoaded && selectedRegion && regionCoordinates[selectedRegion] && naverMap.current) {
+      const regionCoord = regionCoordinates[selectedRegion]
+      const regionPosition = new window.naver.maps.LatLng(regionCoord.lat, regionCoord.lng)
+      
+      console.log(`📍 선택된 지역으로 이동: ${selectedRegion}`, regionCoord)
+      
+      naverMap.current.setCenter(regionPosition)
+      naverMap.current.setZoom(regionCoord.zoom)
+      
+      // 해당 지역의 이슈 가져오기 및 마커 표시
+      loadNearbyIssues(regionCoord.lat, regionCoord.lng).then(regionIssues => {
+        addIssueMarkers(regionIssues)
+        // 바텀시트 자동 확장
+        setIssues(regionIssues)
+        setIsBottomSheetExpanded(true)
+      })
+    }
+  }, [selectedRegion, scriptLoaded])
 
   useEffect(() => {
     console.log('🗺️ 지도 페이지 초기화 시작')
@@ -357,7 +420,9 @@ export default function MapPage() {
               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <h1 className={styles.title}>전국 이슈</h1>
+          <h1 className={styles.title}>
+            {selectedRegion ? `${selectedRegion} 이슈` : '전국 이슈'}
+          </h1>
           <div className={styles.placeholder}></div>
         </header>
 
@@ -393,8 +458,15 @@ export default function MapPage() {
             <div className={styles.bottomSheetHeader}>
               <div className={styles.bottomSheetHandle} onClick={toggleBottomSheet}></div>
               <div className={styles.headerContent}>
-                <h3>이 주변 이슈 ({issues.length})</h3>
-                <p>해당 지역에 등록된 주요 상황을 확인하세요</p>
+                <h3>
+                  {selectedRegion ? `${selectedRegion} 이슈` : '이 주변 이슈'} ({issues.length})
+                </h3>
+                <p>
+                  {selectedRegion 
+                    ? `${selectedRegion}에 등록된 주요 상황을 확인하세요`
+                    : '해당 지역에 등록된 주요 상황을 확인하세요'
+                  }
+                </p>
               </div>
               {isBottomSheetExpanded && (
                 <button className={styles.closeButton} onClick={toggleBottomSheet}>
@@ -419,7 +491,12 @@ export default function MapPage() {
                 ) : (
                   <div className={styles.emptyState}>
                     <div className={styles.emptyIcon}>📍</div>
-                    <h4>이 지역에 등록된 이슈가 없습니다</h4>
+                    <h4>
+                      {selectedRegion 
+                        ? `${selectedRegion}에 등록된 이슈가 없습니다`
+                        : '이 지역에 등록된 이슈가 없습니다'
+                      }
+                    </h4>
                     <p>새로운 이슈를 제보해주세요</p>
                   </div>
                 )}

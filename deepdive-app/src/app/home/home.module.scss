@@ -620,52 +620,43 @@
 .bottomNav {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 440px; // 모바일 최대 너비
-  display: flex;
+  left: 0;
+  right: 0;
   background-color: white;
-  border-top: 1px solid #e5e7eb;
-  padding: 8px 0;
-  z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  /* iOS Safari 하단 안전 영역 대응 */
-  padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
-  height: var(--bottom-nav-height);
-  box-sizing: border-box;
-}
-
-.navItem {
-  flex: 1;
+  border-top: 1px solid #e9ecef;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  padding: 8px 4px;
-  cursor: pointer;
-  color: #9ca3af;
-  transition: all 0.2s;
-  font-size: 0.875rem;
-  font-weight: 500;
-  outline: none;
+  padding: 8px 0 20px 0;
+  z-index: 1000;
+  max-width: 440px;
+  margin: 0 auto;
 
-  &:hover {
-    color: #6b7280;
-  }
-
-  &.active {
-    color: #262E39;
-  }
-  
-  &:focus {
-    outline: none;
-  }
-
-  img {
+  .navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: 8px 4px;
+    cursor: pointer;
+    color: #9ca3af;
     transition: all 0.2s;
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    &:hover {
+      color: #6b7280;
+    }
+
+    &.active {
+      color: #262E39;
+    }
+
+    span {
+      font-size: 0.75rem;
+    }
   }
 }
 

@@ -40,6 +40,13 @@ export default function HomePage() {
     console.log('✅ showInterestRegionModal 상태:', true)
   }
 
+  // 지역 클릭 핸들러
+  const handleRegionClick = (regionName) => {
+    console.log('📍 지역 클릭:', regionName)
+    // 해당 지역의 지도 페이지로 이동
+    router.push(`/map?region=${encodeURIComponent(regionName)}`)
+  }
+
   // 성공 토스트 확인
   useEffect(() => {
     const shouldShowToast = localStorage.getItem('showSuccessToast')
@@ -193,77 +200,112 @@ export default function HomePage() {
            </div>
          </div>
 
-        {/* 지도 이미지 영역 */}
-        <div className={styles.mapSection}>
-          <div className={styles.mapContainer} onClick={() => router.push('/map')}>
-            <div className={styles.mapPlaceholder}>
-              {selectedRegion === '문경시' ? (
-                <img 
-                  src="/img/Card.svg"
-                  alt="문경시 지도" 
-                  className={styles.mapImage}
-                  onLoad={() => console.log('🗺️ 문경시 지도 이미지 로드 완료')}
-                  onError={(e) => console.error('❌ 문경시 지도 이미지 로드 실패:', e)}
-                />
-              ) : selectedRegion === '창원시' ? (
-                <img 
-                  src="/img/Card2.svg"
-                  alt="창원시 지도" 
-                  className={styles.mapImage}
-                  onLoad={() => console.log('🗺️ 창원시 지도 이미지 로드 완료')}
-                  onError={(e) => console.error('❌ 창원시 지도 이미지 로드 실패:', e)}
-                />
-              ) : (
-                <img 
-                  src="/icons/map.svg" 
-                  alt="전국 지도" 
-                  className={styles.mapImage}
-                  onLoad={() => console.log('🗺️ 전국 지도 이미지 로드 완료')}
-                  onError={(e) => console.error('❌ 전국 지도 이미지 로드 실패:', e)}
-                />
-              )}
+                 {/* 지도 이미지 영역 */}
+         <div className={styles.mapSection}>
+           <div className={styles.mapContainer}>
+             <div className={styles.mapPlaceholder}>
+                             {selectedRegion === '문경시' ? (
+                 <img 
+                   src="/img/Card.svg"
+                   alt="문경시 지도" 
+                   className={styles.mapImage}
+                   onClick={() => router.push('/map?region=문경시')}
+                   onLoad={() => console.log('🗺️ 문경시 지도 이미지 로드 완료')}
+                   onError={(e) => console.error('❌ 문경시 지도 이미지 로드 실패:', e)}
+                 />
+               ) : selectedRegion === '창원시' ? (
+                 <img 
+                   src="/img/Card2.svg"
+                   alt="창원시 지도" 
+                   className={styles.mapImage}
+                   onClick={() => router.push('/map?region=창원시')}
+                   onLoad={() => console.log('🗺️ 창원시 지도 이미지 로드 완료')}
+                   onError={(e) => console.error('❌ 창원시 지도 이미지 로드 실패:', e)}
+                 />
+               ) : (
+                 <img 
+                   src="/icons/map.svg" 
+                   alt="전국 지도" 
+                   className={styles.mapImage}
+                   onClick={() => router.push('/map')}
+                   onLoad={() => console.log('🗺️ 전국 지도 이미지 로드 완료')}
+                   onError={(e) => console.error('❌ 전국 지도 이미지 로드 실패:', e)}
+                 />
+               )}
               
               {/* 전체 탭일 때만 모든 지역 표시 */}
               {selectedRegion === '전체' && (
                 <>
                   {/* 8개 지방별 원 표시 */}
                   {/* 강원도 (상단 동쪽) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}
+                    onClick={() => handleRegionClick('강원도')}
+                  >
                     <span className={styles.dotCount}>1</span>
                   </div>
                   
                   {/* 충북 (중앙 북쪽) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}
+                    onClick={() => handleRegionClick('충청북도')}
+                  >
                     <span className={styles.dotCount}>4</span>
                   </div>
                   
                   {/* 충남 (중앙) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}
+                    onClick={() => handleRegionClick('충청남도')}
+                  >
                     <span className={styles.dotCount}>5</span>
                   </div>
                   
                   {/* 경북 (동쪽 중앙) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}
+                    onClick={() => handleRegionClick('경상북도')}
+                  >
                     <span className={styles.dotCount}>1</span>
                   </div>
                   
                   {/* 경남 (동남쪽) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}
+                    onClick={() => handleRegionClick('경상남도')}
+                  >
                     <span className={styles.dotCount}>3</span>
                   </div>
                   
                   {/* 전북 (서쪽 중앙) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}
+                    onClick={() => handleRegionClick('전라북도')}
+                  >
                     <span className={styles.dotCount}>2</span>
                   </div>
                   
                   {/* 전남 (서남쪽) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}
+                    onClick={() => handleRegionClick('전라남도')}
+                  >
                     <span className={styles.dotCount}>3</span>
                   </div>
                   
                   {/* 제주도 (최남단) */}
-                  <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}>
+                  <div 
+                    className={styles.regionDot} 
+                    style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}
+                    onClick={() => handleRegionClick('제주특별자치도')}
+                  >
                     <span className={styles.dotCount}>1</span>
                   </div>
                 </>
@@ -392,7 +434,10 @@ export default function HomePage() {
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'community' ? styles.active : ''}`}
-          onClick={() => setActiveTab('community')}
+          onClick={() => {
+            setActiveTab('community')
+            router.push('/community')
+          }}
         >
           <Icon name={activeTab === 'community' ? 'location' : 'location'} size={24} />
           <span>커뮤니티</span>

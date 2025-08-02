@@ -166,14 +166,14 @@ export default function StatsPage() {
           <span>제보</span>
         </button>
         <button 
-          className={`${styles.navItem} ${activeTab === 'favorites' ? styles.active : ''}`}
+          className={`${styles.navItem} ${activeTab === 'community' ? styles.active : ''}`}
           onClick={() => {
-            setActiveTab('favorites')
-            router.push('/favorites')
+            setActiveTab('community')
+            router.push('/community')
           }}
         >
-          <Icon name={activeTab === 'favorites' ? 'favorite-true' : 'favorite-false'} size={24} />
-          <span>관심 지역</span>
+          <Icon name={activeTab === 'community' ? 'location' : 'location'} size={24} />
+          <span>커뮤니티</span>
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}
