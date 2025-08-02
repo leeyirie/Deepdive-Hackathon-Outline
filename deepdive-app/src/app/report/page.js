@@ -156,8 +156,8 @@ export default function ReportPage() {
             uploadFormData.append('files', img.file) // 백엔드 API에 맞춰 'files'로 key 설정
           })
           
-          // 백엔드로 직접 업로드
-          const uploadResponse = await fetch('http://13.124.229.252:8080/files/upload', {
+          // 프론트엔드 프록시를 통한 업로드
+          const uploadResponse = await fetch('/api/files/upload', {
             method: 'POST',
             body: uploadFormData
           })

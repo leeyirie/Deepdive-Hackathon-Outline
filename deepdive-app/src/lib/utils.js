@@ -1,12 +1,10 @@
 /**
- * 백엔드 이미지 URL을 백엔드 서버 URL로 변환
+ * 백엔드 이미지 URL을 프론트엔드 프록시 URL로 변환
  * @param {string|string[]} imageUrl - 백엔드에서 반환된 이미지 URL 또는 URL 배열
- * @returns {string|string[]} 백엔드 서버 URL로 변환된 이미지 URL
+ * @returns {string|string[]} 프록시 URL로 변환된 이미지 URL
  */
 export function convertImageUrl(imageUrl) {
   if (!imageUrl) return imageUrl
-  
-  const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://13.124.229.252:8080'
   
   // 배열인 경우 각 요소를 변환
   if (Array.isArray(imageUrl)) {
@@ -17,31 +15,45 @@ export function convertImageUrl(imageUrl) {
   if (typeof imageUrl === 'string') {
     console.log('🔍 convertImageUrl 입력:', imageUrl)
     
-    // 이미 전체 URL인 경우 그대로 반환
+    // 이미 프록시 URL인 경우 그대로 반환
+    if (imageUrl.startsWith('/api/uploads/')) {
+      console.log('✅ 이미 프록시 URL, 그대로 반환:', imageUrl)
+      return imageUrl
+    }
+    
+    // 이미 전체 URL인 경우 프록시로 변환
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      // http://13.124.229.252:8080/uploads/filename.jpg -> /api/uploads/filename.jpg
+      const urlObj = new URL(imageUrl)
+      const path = urlObj.pathname
+      if (path.startsWith('/uploads/')) {
+        const proxyUrl = `/api${path}`
+        console.log('🔄 전체 URL을 프록시로 변환:', imageUrl, '->', proxyUrl)
+        return proxyUrl
+      }
       console.log('🌐 전체 URL, 그대로 반환:', imageUrl)
       return imageUrl
     }
     
-    // /uploads/filename.jpg -> http://13.124.229.252:8080/uploads/filename.jpg
+    // /uploads/filename.jpg -> /api/uploads/filename.jpg
     if (imageUrl.startsWith('/uploads/')) {
-      const fullUrl = `${BACKEND_URL}${imageUrl}`
-      console.log('🔄 백엔드 URL로 변환 (uploads 포함):', imageUrl, '->', fullUrl)
-      return fullUrl
+      const proxyUrl = `/api${imageUrl}`
+      console.log('🔄 프록시 URL로 변환:', imageUrl, '->', proxyUrl)
+      return proxyUrl
     }
     
-    // /filename.jpg -> http://13.124.229.252:8080/filename.jpg (uploads 없이)
+    // /filename.jpg -> /api/uploads/filename.jpg (uploads 추가)
     if (imageUrl.startsWith('/') && !imageUrl.startsWith('/uploads/')) {
-      const fullUrl = `${BACKEND_URL}${imageUrl}`
-      console.log('🔄 백엔드 URL로 변환 (uploads 없음):', imageUrl, '->', fullUrl)
-      return fullUrl
+      const proxyUrl = `/api/uploads${imageUrl}`
+      console.log('🔄 프록시 URL로 변환 (uploads 추가):', imageUrl, '->', proxyUrl)
+      return proxyUrl
     }
     
-    // filename.jpg -> http://13.124.229.252:8080/filename.jpg (슬래시 없이)
+    // filename.jpg -> /api/uploads/filename.jpg (슬래시 추가)
     if (!imageUrl.startsWith('/') && !imageUrl.startsWith('http')) {
-      const fullUrl = `${BACKEND_URL}/${imageUrl}`
-      console.log('🔄 백엔드 URL로 변환 (슬래시 추가):', imageUrl, '->', fullUrl)
-      return fullUrl
+      const proxyUrl = `/api/uploads/${imageUrl}`
+      console.log('🔄 프록시 URL로 변환 (슬래시 추가):', imageUrl, '->', proxyUrl)
+      return proxyUrl
     }
   }
   

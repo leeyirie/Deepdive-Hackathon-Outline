@@ -27,6 +27,7 @@ export async function GET(request, { params }) {
         headers: {
           'Content-Type': contentType,
           'Cache-Control': 'public, max-age=31536000', // 1년 캐시
+          'Access-Control-Allow-Origin': '*',
         },
       })
     } else {
