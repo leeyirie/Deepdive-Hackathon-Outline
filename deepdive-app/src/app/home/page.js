@@ -294,7 +294,7 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            // API 호출 중일 때 표시
+            // API 호출 중일 때 표시재재
             <div className={styles.loadingContainer}>
               <p>이슈를 불러오는 중...</p>
             </div>
@@ -324,10 +324,11 @@ export default function HomePage() {
         </div>
 
                  {/* 재난 기부 현황 보기 섹션 */}
-         <div className={styles.donationSection}>
-           <div className={styles.sectionHeader}>
+                 <div className={styles.sectionHeader}>
              <h2>재난 기부 현황 보기</h2>
            </div>
+         <div className={styles.donationSection}>
+          
           
           <div className={styles.donationCard}>
             <div className={styles.donationImage}>
@@ -336,11 +337,12 @@ export default function HomePage() {
                 alt="충남 폭우 피해" 
                 className={styles.realImage}
               />
-             
             </div>
             
             <div className={styles.donationContent}>
-           
+              <div className={styles.donationTag}>
+                <span>♥ 기부중</span>
+              </div>
               <h3>충남 폭우 피해자 기부 모음</h3>
               <p>충남 폭우 피해 주민을 위한 긴급 모금에 함께해 주세요.</p>
               <div className={styles.donationFoundation}>임병준 재단</div>

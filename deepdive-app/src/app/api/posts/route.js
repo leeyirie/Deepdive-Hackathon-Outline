@@ -68,7 +68,7 @@ export async function POST(request) {
     console.log('📤 제보 등록 요청 데이터 키:', Object.keys(body))
 
     // 필수 필드 검증
-    const { userId, title, content, imageUrl, locationCode, regionName, latitude, longitude, status } = body
+    const { userId, title, content, imageUrl, regionName, latitude, longitude, status } = body
 
     if (!userId || !title || !content) {
       return NextResponse.json(
@@ -77,14 +77,25 @@ export async function POST(request) {
       )
     }
 
+    // 위치 정보 검증 (백엔드에서 요구할 수 있음)
+    if (!regionName || !latitude || !longitude) {
+      return NextResponse.json(
+        { error: 'regionName, latitude, longitude are required' },
+        { status: 400 }
+      )
+    }
+
+    // null 값 처리 - 빈 문자열이나 null인 경우 빈 문자열로 변환
+    const safeImageUrl = imageUrl === null || imageUrl === '' ? '' : imageUrl
+    const safeRegionName = regionName === null || regionName === '' ? '' : regionName
+
     // 백엔드로 보낼 데이터 구성
     const backendData = {
       userId: parseInt(userId),
       title: title.trim(),
       content: content.trim(),
-      imageUrl: Array.isArray(imageUrl) ? imageUrl : (imageUrl ? [imageUrl] : []),
-      locationCode: locationCode || '',
-      regionName: regionName || '',
+      imageUrl: safeImageUrl, // 안전하게 처리된 이미지 URL
+      regionName: safeRegionName, // 안전하게 처리된 지역명
       latitude: latitude ? parseFloat(latitude) : null,
       longitude: longitude ? parseFloat(longitude) : null,
       status: status || 0

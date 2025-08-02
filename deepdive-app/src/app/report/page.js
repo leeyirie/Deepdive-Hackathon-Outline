@@ -107,6 +107,8 @@ export default function ReportPage() {
     return formData.title.trim() && 
            formData.content.trim() && 
            formData.location.trim() &&
+           formData.latitude !== null &&
+           formData.longitude !== null &&
            !isSubmitting
   }
 
@@ -126,14 +128,12 @@ export default function ReportPage() {
       }
 
       // 이미지 업로드 처리 - 백엔드로 직접 업로드
-      let imageUrls = []
+      let imageUrl = ''
       if (images.length > 0) {
         try {
           // FormData를 사용하여 이미지 파일들을 백엔드로 전송
           const uploadFormData = new FormData()
-          images.forEach((img) => {
-            uploadFormData.append('files', img.file) // 백엔드 API에 맞춰 'files'로 key 설정
-          })
+          uploadFormData.append('files', images[0].file) // 첫 번째 이미지만 업로드
           
           // 프론트엔드 프록시를 통한 업로드
           const uploadResponse = await fetch('/api/files/upload', {
@@ -143,43 +143,43 @@ export default function ReportPage() {
           
           if (uploadResponse.ok) {
             const uploadedUrls = await uploadResponse.json()
-            imageUrls = uploadedUrls || []
-            console.log('✅ 이미지 업로드 성공:', imageUrls)
-            console.log('📝 업로드된 URL 타입:', typeof imageUrls)
-            console.log('📝 업로드된 URL 배열:', Array.isArray(imageUrls) ? imageUrls : '배열이 아님')
+            // 배열의 첫 번째 URL만 사용
+            imageUrl = Array.isArray(uploadedUrls) && uploadedUrls.length > 0 ? uploadedUrls[0] : ''
+            console.log('✅ 이미지 업로드 성공:', imageUrl)
           } else {
             const errorText = await uploadResponse.text()
             console.error('❌ 이미지 업로드 실패:', uploadResponse.status, errorText)
             // 이미지 업로드 실패 시에도 게시글은 등록
-            imageUrls = []
+            imageUrl = ''
           }
         } catch (error) {
           console.error('❌ 이미지 업로드 오류:', error)
           // 이미지 업로드 오류 시에도 게시글은 등록
-          imageUrls = []
+          imageUrl = ''
         }
       }
 
-             // API 요청 데이터 구성
+             // API 요청 데이터 구성 - null 값 안전 처리
        const requestData = {
          userId: parseInt(userId),
          title: formData.title.trim(),
          content: formData.content.trim(),
-         imageUrl: imageUrls, // 배열 그대로 전송
-         locationCode: '', // 백엔드에서 자동 처리
-         regionName: formData.location, // 네이버 API에서 받은 주소 (예: "서울특별시 강남구")
-         latitude: formData.latitude,
-         longitude: formData.longitude,
+         imageUrl: imageUrl || '', // 빈 문자열로 전송 (백엔드에서 안전 처리)
+         regionName: formData.location || '', // 빈 문자열로 전송 (백엔드에서 안전 처리)
+         latitude: formData.latitude || null,
+         longitude: formData.longitude || null,
          status: 0 // 기본 상태
        }
 
        console.log('📤 제보 등록 요청:', requestData)
-       console.log('📝 imageUrl 필드 값:', requestData.imageUrl)
-       console.log('📝 imageUrl 타입:', typeof requestData.imageUrl)
-       console.log('📝 imageUrl 배열 여부:', Array.isArray(requestData.imageUrl))
-       console.log('📝 formData.location:', formData.location)
-       console.log('📝 formData.latitude:', formData.latitude)
-       console.log('📝 formData.longitude:', formData.longitude)
+               console.log('📝 필수 필드 검증:')
+        console.log('  - userId:', requestData.userId, '(필수)')
+        console.log('  - title:', requestData.title, '(필수)')
+        console.log('  - content:', requestData.content, '(필수)')
+        console.log('  - imageUrl:', requestData.imageUrl)
+        console.log('  - regionName:', requestData.regionName)
+        console.log('  - latitude:', requestData.latitude)
+        console.log('  - longitude:', requestData.longitude)
  
        // API 호출
        const response = await fetch('/api/posts', {
@@ -205,18 +205,47 @@ export default function ReportPage() {
         
         router.push('/home')
       } else {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        let errorData
+        try {
+          errorData = await response.json()
+        } catch (e) {
+          errorData = { error: 'Unknown error' }
+        }
+        
         console.error('❌ 제보 등록 실패:', {
           status: response.status,
           statusText: response.statusText,
           error: errorData
         })
-        throw new Error(`제보 등록 실패: ${response.status} - ${errorData.error || 'Unknown error'}`)
+        
+                 // 더 구체적인 에러 메시지 제공
+         let errorMessage = '제보 등록 중 오류가 발생했습니다.'
+         if (response.status === 400) {
+           // 백엔드에서 받은 구체적인 에러 메시지 사용
+           if (errorData.error) {
+             if (errorData.error.includes('regionName, latitude, longitude')) {
+               errorMessage = '위치를 선택해주세요.'
+             } else if (errorData.error.includes('userId, title, content')) {
+               errorMessage = '제목과 내용을 입력해주세요.'
+             } else {
+               errorMessage = errorData.error
+             }
+           } else {
+             errorMessage = '입력 정보를 확인해주세요.'
+           }
+         } else if (response.status === 401) {
+           errorMessage = '로그인이 필요합니다.'
+         } else if (response.status === 500) {
+           errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+         }
+        
+        alert(errorMessage)
+        return
       }
 
     } catch (error) {
       console.error('❌ 제보 등록 오류:', error)
-      alert('제보 등록 중 오류가 발생했습니다. 다시 시도해주세요.')
+      alert('네트워크 오류가 발생했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.')
     } finally {
       setIsSubmitting(false)
     }
