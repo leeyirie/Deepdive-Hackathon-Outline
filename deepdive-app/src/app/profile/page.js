@@ -127,11 +127,17 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className={styles.userActions}>
-              <button className={styles.actionButton}>
+              <button 
+                className={styles.actionButton}
+                onClick={() => router.push('/profile/my-reports')}
+              >
                 <Icon name="upload-true" size={20} />
                 <span>내 제보</span>
               </button>
-              <button className={styles.actionButton}>
+              <button 
+                className={styles.actionButton}
+                onClick={() => router.push('/profile/liked-issues')}
+              >
                 <Icon name="favorite-true" size={20} />
                 <span>공감한 이슈</span>
               </button>
