@@ -32,7 +32,7 @@ export default function Home() {
 
                {/* 화이트 로고 아이콘 */}
         <div style={{ marginBottom: '1rem' }}>
-           <Icon name="logo" size={80} color="white" />
+           <Icon name="logo-white" size={80} color="white" />
          </div>
       <h1 
         className="select-none"
