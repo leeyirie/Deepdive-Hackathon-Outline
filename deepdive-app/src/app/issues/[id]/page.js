@@ -3,7 +3,25 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
 import { convertImageUrl } from '@/lib/utils'
+import { REGIONS } from '@/lib/constants/regions'
 import styles from './issue-detail.module.scss'
+
+// locationCode를 지역 이름으로 변환하는 함수
+const getLocationNameFromCode = (locationCode) => {
+  if (!locationCode) return '위치 정보 없음'
+  
+  // REGIONS 객체를 순회하면서 locationCode와 매칭되는 지역 찾기
+  for (const [province, provinceData] of Object.entries(REGIONS)) {
+    for (const [subRegion, code] of Object.entries(provinceData.sub_regions)) {
+      if (code === locationCode) {
+        return `${province} ${subRegion}`
+      }
+    }
+  }
+  
+  // 매칭되는 지역이 없으면 원본 코드 반환
+  return locationCode
+}
 
 export default function IssueDetailPage() {
   const router = useRouter()
@@ -350,7 +368,7 @@ export default function IssueDetailPage() {
           {/* <p className={styles.subtitle}>{issue.content}</p> //서브타이틀 부분 삭제제 */}
           <div className={styles.timeInfo}>
             <Icon name="location" size={16} />
-            <span>{issue.locationCode || '위치 정보 없음'} · {formatTimeAgo(issue.createdAt)}</span>
+            <span>{getLocationNameFromCode(issue.locationCode)} · {formatTimeAgo(issue.createdAt)}</span>
           </div>
         </section>
 
@@ -462,7 +480,7 @@ export default function IssueDetailPage() {
                 <div className={styles.relatedContent}>
                   <h4 className={styles.relatedItemTitle}>{relatedIssue.title}</h4>
                   <p className={styles.relatedItemMeta}>
-                    {relatedIssue.locationCode || '위치 정보 없음'} · {formatTimeAgo(relatedIssue.createdAt)}
+                    {getLocationNameFromCode(relatedIssue.locationCode)} · {formatTimeAgo(relatedIssue.createdAt)}
                   </p>
                 </div>
                 {relatedIssue.imageUrl && typeof relatedIssue.imageUrl === 'string' && relatedIssue.imageUrl.trim() !== '' && (
