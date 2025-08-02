@@ -6,18 +6,58 @@ import styles from './IssueCard.module.scss'
 export default function IssueCard({ post }) {
   const router = useRouter()
   
-  // 날짜 포맷 함수
+  // 날짜 포맷 함수 (한국 시간대 기준)
   const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffTime = Math.abs(now - date)
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    if (!dateString) return ''
     
-    if (diffHours < 24) return `${diffHours}시간 전`
-    if (diffDays === 1) return '1일 전'
-    if (diffDays <= 7) return `${diffDays}일 전`
-    return date.toLocaleDateString('ko-KR')
+    try {
+      // 한국 시간대로 변환
+      const date = new Date(dateString)
+      
+      // 유효한 날짜인지 확인
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date format in IssueCard:', dateString)
+        return ''
+      }
+      
+      // 현재 시간 (한국 시간대)
+      const now = new Date()
+      
+      // 시간 차이 계산 (밀리초)
+      const diffTime = now.getTime() - date.getTime()
+      const diffMins = Math.floor(diffTime / (1000 * 60))
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+      const diffMonths = Math.floor(diffDays / 30)
+      const diffYears = Math.floor(diffDays / 365)
+      
+      // 디버깅을 위한 로그
+      console.log('🕐 IssueCard time debug:', {
+        original: dateString,
+        parsed: date,
+        now: now,
+        diffMs: diffTime,
+        diffHours: diffHours,
+        result: diffTime < 0 ? '방금 전' : 
+                diffMins < 1 ? '방금 전' :
+                diffMins < 60 ? `${diffMins}분 전` :
+                diffHours < 24 ? `${diffHours}시간 전` :
+                diffDays < 30 ? `${diffDays}일 전` :
+                diffMonths < 12 ? `${diffMonths}개월 전` :
+                `${diffYears}년 전`
+      })
+      
+      if (diffTime < 0) return '방금 전' // 미래 시간인 경우
+      if (diffMins < 1) return '방금 전'
+      if (diffMins < 60) return `${diffMins}분 전`
+      if (diffHours < 24) return `${diffHours}시간 전`
+      if (diffDays < 30) return `${diffDays}일 전`
+      if (diffMonths < 12) return `${diffMonths}개월 전`
+      return `${diffYears}년 전`
+    } catch (error) {
+      console.error('Error formatting date in IssueCard:', error)
+      return ''
+    }
   }
 
   const handleClick = (e) => {
@@ -92,8 +132,8 @@ export default function IssueCard({ post }) {
             {post?.content || '내용 없음'}
           </p>
           <div className={styles.issueMeta}>
-            {/* 백엔드 데이터: post.createdAt (작성일시) → 상대적 시간으로 변환 */}
-            <span>{formatDate(post?.createdAt || new Date())}</span>
+            {/* 백엔드 데이터: post.createdAt (작성일시) → 상대적 시간만 표시 */}
+            <span>{formatDate(post?.createdAt)}</span>
             {/* 백엔드 데이터: post.likeCount (공감수) */}
             <span>공감수 {post?.likeCount || 0}</span>
           </div>

@@ -24,6 +24,16 @@ export default function ReportPage() {
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
+  // 파일을 Base64로 변환하는 함수
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = error => reject(error)
+    })
+  }
+
   // 폼 입력 핸들러
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -125,23 +135,32 @@ export default function ReportPage() {
         return
       }
 
-      // 이미지 업로드 처리 (실제로는 서버에 업로드해야 함)
-      // 현재는 더미 URL 사용
-      const imageUrls = images.map((img, index) => 
-        `https://example.com/images/${Date.now()}_${index}.jpg`
-      )
+      // 이미지 처리 - Base64로 인코딩
+      let imageUrls = []
+      if (images.length > 0) {
+        try {
+          // 이미지 파일들을 Base64로 인코딩
+          for (const img of images) {
+            const base64 = await fileToBase64(img.file)
+            imageUrls.push(base64)
+          }
+          console.log('✅ 이미지 Base64 인코딩 완료:', imageUrls.length)
+        } catch (error) {
+          console.error('❌ 이미지 인코딩 오류:', error)
+          imageUrls = []
+        }
+      }
 
       // API 요청 데이터 구성
       const requestData = {
         userId: parseInt(userId),
         title: formData.title.trim(),
         content: formData.content.trim(),
-        imageURL: imageUrls.join(','), // 콤마로 구분된 문자열
+        imageUrl: imageUrls.join(','), // 콤마로 구분된 문자열 (백엔드 API 스키마에 맞춤)
         locationCode: formData.locationCode,
         latitude: formData.latitude,
         longitude: formData.longitude,
-        status: 0, // 기본 상태
-        createdAt: new Date().toISOString() // 현재 시간 자동 추가
+        status: 0 // 기본 상태
       }
 
       console.log('📤 제보 등록 요청:', requestData)
@@ -227,12 +246,14 @@ export default function ReportPage() {
             className={styles.locationButton}
             onClick={() => setShowMapModal(true)}
           >
-            <Icon name="location" size={20} />
-            <span className={formData.location ? styles.selected : ''}>
-              {formData.location || '위치를 선택하세요'}
-            </span>
-            <Icon name="chevron-down" size={16} />
-          </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Icon name="location" size={20} />
+              <span className={formData.location ? styles.selected : ''}>
+                {formData.location || '위치를 선택하세요'}
+              </span>
+            </div>
+            <Icon name="gps" size={16} />
+          </button> 
         </div>
 
         {/* 이미지 업로드 */}

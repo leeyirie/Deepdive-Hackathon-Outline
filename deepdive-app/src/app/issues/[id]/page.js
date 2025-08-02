@@ -20,39 +20,26 @@ export default function IssueDetailPage() {
   const [likeCount, setLikeCount] = useState(0)
   const [isLikeLoading, setIsLikeLoading] = useState(false)
 
-  // AI 요약 생성 함수
-  const fetchAiSummary = async (issueData) => {
-    if (!issueData?.content) return
+  // AI 요약 조회 함수
+  const fetchAiSummary = async (postId) => {
+    if (!postId) return
     
     try {
       setAiSummaryLoading(true)
-      console.log('🤖 AI 요약 생성 요청 중...')
+      console.log('🤖 AI 요약 조회 중...')
       
-      const response = await fetch('/api/summarize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: issueData.title,
-          content: issueData.content
-        })
-      })
+      const response = await fetch(`/api/posts/${postId}/summary`)
       
       if (response.ok) {
         const data = await response.json()
-        setAiSummary(data.summary)
-        console.log('✅ AI 요약 생성 완료:', data.summary)
-        
-        if (data.warning) {
-          console.warn('⚠️', data.warning)
-        }
+        setAiSummary(data.summarizedContent)
+        console.log('✅ AI 요약 조회 완료:', data.summarizedContent)
       } else {
-        throw new Error(`AI 요약 생성 실패: ${response.status}`)
+        throw new Error(`AI 요약 조회 실패: ${response.status}`)
       }
     } catch (error) {
-      console.error('❌ AI 요약 생성 오류:', error)
-      setAiSummary('AI 요약을 생성하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.')
+      console.error('❌ AI 요약 조회 오류:', error)
+      setAiSummary('AI 요약을 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.')
     } finally {
       setAiSummaryLoading(false)
     }
@@ -77,7 +64,13 @@ export default function IssueDetailPage() {
         
         if (response.ok) {
           const data = await response.json()
-          console.log('✅ Issue detail data:', data)
+                  console.log('✅ Issue detail data:', data)
+        console.log('📅 Created at:', data.createdAt)
+        console.log('📅 Created at parsed:', new Date(data.createdAt))
+        console.log('📅 Current time:', new Date())
+        console.log('📅 Time difference (ms):', new Date().getTime() - new Date(data.createdAt).getTime())
+        console.log('📅 Time difference (hours):', (new Date().getTime() - new Date(data.createdAt).getTime()) / (1000 * 60 * 60))
+        console.log('⏰ Formatted time:', formatTimeAgo(data.createdAt))
           
           setIssue(data)
           setIsLiked(data.liked || false)
@@ -86,8 +79,8 @@ export default function IssueDetailPage() {
           // 상태가 'SOLVED'이면 해결됨으로 표시
           setIsSolved(data.status === 'SOLVED')
           
-          // AI 요약 생성
-          fetchAiSummary(data)
+          // AI 요약 조회
+          fetchAiSummary(params.id)
         
         } else {
           const errorText = await response.text()
@@ -273,17 +266,38 @@ export default function IssueDetailPage() {
   const formatTimeAgo = (createdAt) => {
     if (!createdAt) return ''
     
-    const now = new Date()
-    const created = new Date(createdAt)
-    const diffMs = now - created
-    const diffMins = Math.floor(diffMs / (1000 * 60))
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-    
-    if (diffMins < 1) return '방금 전'
-    if (diffMins < 60) return `${diffMins}분 전`
-    if (diffHours < 24) return `${diffHours}시간 전`
-    return `${diffDays}일 전`
+    try {
+      // 한국 시간대로 변환
+      const created = new Date(createdAt)
+      
+      // 유효한 날짜인지 확인
+      if (isNaN(created.getTime())) {
+        console.warn('Invalid date format:', createdAt)
+        return ''
+      }
+      
+      // 현재 시간 (한국 시간대)
+      const now = new Date()
+      
+      // 시간 차이 계산 (밀리초)
+      const diffMs = now.getTime() - created.getTime()
+      const diffMins = Math.floor(diffMs / (1000 * 60))
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      const diffMonths = Math.floor(diffDays / 30)
+      const diffYears = Math.floor(diffDays / 365)
+      
+      if (diffMs < 0) return '방금 전' // 미래 시간인 경우
+      if (diffMins < 1) return '방금 전'
+      if (diffMins < 60) return `${diffMins}분 전`
+      if (diffHours < 24) return `${diffHours}시간 전`
+      if (diffDays < 30) return `${diffDays}일 전`
+      if (diffMonths < 12) return `${diffMonths}개월 전`
+      return `${diffYears}년 전`
+    } catch (error) {
+      console.error('Error formatting time:', error)
+      return ''
+    }
   }
 
   if (loading) {
@@ -299,7 +313,7 @@ export default function IssueDetailPage() {
     return (
       <div className={styles.errorContainer}>
         <div className={styles.errorIcon}>❌</div>
-        <p>{error || '이슈를 찾을 수 없습니다.'}</p>
+        <p>{error || '이슈를 찾을 수 없습니다.'}</p>  
         <div className={styles.errorHelp}>
           <p>다음을 확인해보세요:</p>
           <ul>
@@ -332,10 +346,10 @@ export default function IssueDetailPage() {
         {/* 이슈 정보 */}
         <section className={styles.issueInfo}>
           <h1 className={styles.title}>{issue.title}</h1>
-          <p className={styles.subtitle}>{issue.content}</p>
+          {/* <p className={styles.subtitle}>{issue.content}</p> //서브타이틀 부분 삭제제 */}
           <div className={styles.timeInfo}>
             <Icon name="location" size={16} />
-            <span>오전 9시 32분 · {formatTimeAgo(issue.createdAt)}</span>
+            <span>{issue.locationCode || '위치 정보 없음'} · {formatTimeAgo(issue.createdAt)}</span>
           </div>
         </section>
 
@@ -446,9 +460,9 @@ export default function IssueDetailPage() {
               >
                 <div className={styles.relatedContent}>
                   <h4 className={styles.relatedItemTitle}>{relatedIssue.title}</h4>
-                  <p className={styles.relatedItemMeta}>
-                    전북 고창군 · {formatTimeAgo(relatedIssue.createdAt)}
-                  </p>
+                                      <p className={styles.relatedItemMeta}>
+                      {relatedIssue.locationCode || '위치 정보 없음'} · {formatTimeAgo(relatedIssue.createdAt)}
+                    </p>
                 </div>
                 {relatedIssue.imageUrl && (
                   <div className={styles.relatedImage}>

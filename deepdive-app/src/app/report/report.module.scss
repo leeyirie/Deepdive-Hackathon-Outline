@@ -126,7 +126,7 @@
 .locationButton {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   width: 100%;
   padding: 16px;
   border: 1px solid #e5e7eb;

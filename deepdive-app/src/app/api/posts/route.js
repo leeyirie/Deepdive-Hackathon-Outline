@@ -37,6 +37,13 @@ export async function GET(request, { params }) {
     
     if (backendResponse.ok) {
       const data = await backendResponse.json()
+      console.log('📋 Posts list data sample:', data?.slice(0, 2)?.map(post => ({
+        id: post.id,
+        title: post.title,
+        createdAt: post.createdAt,
+        createdAtParsed: new Date(post.createdAt),
+        timeDiff: new Date().getTime() - new Date(post.createdAt).getTime()
+      })))
       return NextResponse.json(data)
     } else {
       return NextResponse.json(

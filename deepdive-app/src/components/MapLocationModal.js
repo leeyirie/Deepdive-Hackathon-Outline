@@ -3,6 +3,29 @@ import { useState, useEffect, useRef } from 'react'
 import Icon from '@/components/icons/Icon'
 import styles from './MapLocationModal.module.scss'
 
+// 주소를 시/구/동까지만 파싱하는 함수
+const parseAddress = (fullAddress) => {
+  if (!fullAddress) return ''
+  
+  console.log('🔍 파싱할 주소:', fullAddress)
+  
+  // 정규식을 사용한 더 정확한 파싱
+  const cityMatch = fullAddress.match(/([가-힣]+시)/)
+  const districtMatch = fullAddress.match(/([가-힣]+구)/)
+  const neighborhoodMatch = fullAddress.match(/([가-힣]+동|[가-힣]+읍|[가-힣]+면)/)
+  
+  const city = cityMatch ? cityMatch[1] : ''
+  const district = districtMatch ? districtMatch[1] : ''
+  const neighborhood = neighborhoodMatch ? neighborhoodMatch[1] : ''
+  
+  console.log('🔍 정규식 매칭 결과:', { city, district, neighborhood })
+  
+  // 결과 조합
+  const result = [city, district, neighborhood].filter(Boolean).join(' ')
+  console.log('🎯 최종 결과:', result)
+  return result || fullAddress
+}
+
 // 지도 위치 선택 모달 컴포넌트
 export default function MapLocationModal({ onSelect, onClose }) {
   const mapRef = useRef(null)
@@ -124,7 +147,7 @@ export default function MapLocationModal({ onSelect, onClose }) {
 
   const handleConfirm = () => {
     if (selectedLocation && address) {
-      onSelect(selectedLocation.lat, selectedLocation.lng, address)
+      onSelect(selectedLocation.lat, selectedLocation.lng, parseAddress(address))
     }
   }
 
@@ -168,7 +191,7 @@ export default function MapLocationModal({ onSelect, onClose }) {
               <Icon name="location" size={16} />
             </div>
             <div className={styles.locationText}>
-              <p>{address}</p>
+              <p>{parseAddress(address)}</p>
             </div>
           </div>
         )}
