@@ -190,8 +190,8 @@
   }
 }
 
-// AI 요약
-.aiSummary {
+// 이슈 내용
+.issueContent {
   margin: 20px 18px 10px 18px;
   padding: 16px;
   background-color: #f8f9fa;
@@ -199,7 +199,7 @@
   border: 1px solid #e9ecef;
 }
 
-.aiHeader {
+.contentHeader {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -212,27 +212,7 @@
   }
 }
 
-.aiLoadingSpinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #e9ecef;
-  border-top: 2px solid #4285f4;
-  border-radius: 50%;
-  animation: aiSpin 1s linear infinite;
-  margin-left: auto;
-}
-
-@keyframes aiSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.aiLoadingText {
-  color: #666;
-  font-style: italic;
-}
-
-.aiContent {
+.contentText {
   font-size: 14px;
   line-height: 1.6;
   color: #555;
@@ -534,7 +514,7 @@
     padding: 16px 18px;
   }
   
-  .aiSummary {
+  .issueContent {
     margin: 16px 18px;
     padding: 12px;
   }

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Icon from '@/components/icons/Icon'
-import { convertImageUrl } from '@/lib/utils'
+import { convertImageUrl, formatTimeAgo } from '@/lib/utils'
 import { REGIONS } from '@/lib/constants/regions'
 import styles from './issue-detail.module.scss'
 
@@ -34,35 +34,8 @@ export default function IssueDetailPage() {
   const [isLiked, setIsLiked] = useState(false)
   const [isSolved, setIsSolved] = useState(false)
   const [error, setError] = useState(null)
-  const [aiSummary, setAiSummary] = useState('')
-  const [aiSummaryLoading, setAiSummaryLoading] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [isLikeLoading, setIsLikeLoading] = useState(false)
-
-  // AI 요약 조회 함수
-  const fetchAiSummary = async (postId) => {
-    if (!postId) return
-    
-    try {
-      setAiSummaryLoading(true)
-      console.log('🤖 AI 요약 조회 중...')
-      
-      const response = await fetch(`/api/posts/${postId}/summary`)
-      
-      if (response.ok) {
-        const data = await response.json()
-        setAiSummary(data.summarizedContent)
-        console.log('✅ AI 요약 조회 완료:', data.summarizedContent)
-      } else {
-        throw new Error(`AI 요약 조회 실패: ${response.status}`)
-      }
-    } catch (error) {
-      console.error('❌ AI 요약 조회 오류:', error)
-      setAiSummary('AI 요약을 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.')
-    } finally {
-      setAiSummaryLoading(false)
-    }
-  }
 
   useEffect(() => {
     const fetchIssueDetail = async () => {
@@ -97,9 +70,6 @@ export default function IssueDetailPage() {
           
           // 상태가 'SOLVED'이면 해결됨으로 표시
           setIsSolved(data.status === 'SOLVED')
-          
-          // AI 요약 조회
-          fetchAiSummary(params.id)
         
         } else {
           const errorText = await response.text()
@@ -312,42 +282,7 @@ export default function IssueDetailPage() {
     }
   }
 
-  const formatTimeAgo = (createdAt) => {
-    if (!createdAt) return ''
-    
-    try {
-      // 한국 시간대로 변환
-      const created = new Date(createdAt)
-      
-      // 유효한 날짜인지 확인
-      if (isNaN(created.getTime())) {
-        console.warn('Invalid date format:', createdAt)
-        return ''
-      }
-      
-      // 현재 시간 (한국 시간대)
-      const now = new Date()
-      
-      // 시간 차이 계산 (밀리초)
-      const diffMs = now.getTime() - created.getTime()
-      const diffMins = Math.floor(diffMs / (1000 * 60))
-      const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-      const diffMonths = Math.floor(diffDays / 30)
-      const diffYears = Math.floor(diffDays / 365)
-      
-      if (diffMs < 0) return '방금 전' // 미래 시간인 경우
-      if (diffMins < 1) return '방금 전'
-      if (diffMins < 60) return `${diffMins}분 전`
-      if (diffHours < 24) return `${diffHours}시간 전`
-      if (diffDays < 30) return `${diffDays}일 전`
-      if (diffMonths < 12) return `${diffMonths}개월 전`
-      return `${diffYears}년 전`
-    } catch (error) {
-      console.error('Error formatting time:', error)
-      return ''
-    }
-  }
+
 
   if (loading) {
     return (
@@ -409,25 +344,14 @@ export default function IssueDetailPage() {
           </section>
         )}
 
-        {/* AI 요약 */}
-        <section className={styles.aiSummary}>
-          <div className={styles.aiHeader}>
-            <Icon name="ai" size={20} />
-            <span>AI 요약</span>
-            {aiSummaryLoading && (
-              <div className={styles.aiLoadingSpinner}></div>
-            )}
+        {/* 이슈 내용 */}
+        <section className={styles.issueContent}>
+          <div className={styles.contentHeader}>
+            <Icon name="news" size={20} />
+            <span>이슈 내용</span>
           </div>
-          <p className={styles.aiContent}>
-            {aiSummaryLoading ? (
-              <span className={styles.aiLoadingText}>
-                AI가 이슈 내용을 분석하여 요약을 생성하고 있습니다...
-              </span>
-            ) : aiSummary ? (
-              aiSummary
-            ) : (
-              '이슈 내용을 분석 중입니다. 잠시만 기다려주세요.'
-            )}
+          <p className={styles.contentText}>
+            {issue.content}
           </p>
         </section>
 
