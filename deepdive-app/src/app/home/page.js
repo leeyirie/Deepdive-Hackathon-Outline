@@ -146,14 +146,61 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 지도 이미지 영역 */}
-        <div className={styles.mapSection}>
-          <div className={styles.mapContainer} onClick={() => router.push('/map')}>
-            <div className={styles.mapPlaceholder}>
-              <img src="/icons/map.svg" alt="지도" className={styles.mapImage} />
-            </div>
-          </div>
-        </div>
+                 {/* 지도 이미지 영역 */}
+         <div className={styles.mapSection}>
+           <div className={styles.mapContainer} onClick={() => router.push('/map')}>
+             <div className={styles.mapPlaceholder}>
+               <img 
+                 src="/icons/map.svg" 
+                 alt="지도" 
+                 className={styles.mapImage}
+                 onLoad={() => console.log('🗺️ 지도 이미지 로드 완료')}
+                 onError={(e) => console.error('❌ 지도 이미지 로드 실패:', e)}
+               />
+               
+               {/* 8개 지방별 원 표시 */}
+               {/* 강원도 (상단 동쪽) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '55%', top: '18%' }}>
+                 <span className={styles.dotCount}>1</span>
+               </div>
+               
+               {/* 충북 (중앙 북쪽) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '48%', top: '38%' }}>
+                 <span className={styles.dotCount}>4</span>
+               </div>
+               
+               {/* 충남 (중앙) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '40%', top: '42%' }}>
+                 <span className={styles.dotCount}>5</span>
+               </div>
+               
+               {/* 경북 (동쪽 중앙) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '60%', top: '47%' }}>
+                 <span className={styles.dotCount}>1</span>
+               </div>
+               
+               {/* 경남 (동남쪽) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '55%', top: '62%' }}>
+                 <span className={styles.dotCount}>3</span>
+               </div>
+               
+               {/* 전북 (서쪽 중앙) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '40%', top: '57%' }}>
+                 <span className={styles.dotCount}>2</span>
+               </div>
+               
+               {/* 전남 (서남쪽) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '40%', top: '72%' }}>
+                 <span className={styles.dotCount}>3</span>
+               </div>
+               
+               {/* 제주도 (최남단) */}
+               <div className={styles.regionDot} style={{ backgroundColor: '#000000', left: '28%', top: '88%' }}>
+                 <span className={styles.dotCount}>1</span>
+               </div>
+             </div>
+           </div>
+         </div>
 
                 {/* 이슈 목록 */}
         <div className={styles.issuesSection}>

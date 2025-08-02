@@ -23,6 +23,12 @@ export default function RootLayout({ children }) {
           strategy="afterInteractive"
         />
         
+        {/* 네이버 지도 Geocoding 모듈 로드 */}
+        <Script
+          src="https://oapi.map.naver.com/openapi/v3/maps-geocoder.js"
+          strategy="afterInteractive"
+        />
+        
         {/* 전역 스크립트로 로딩 상태 관리 */}
         <script
           dangerouslySetInnerHTML={{

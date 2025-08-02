@@ -124,8 +124,7 @@
 
 .mapContainer {
   width: 100%;
-  height: 0;
-  padding-bottom: 70%; // 🔧 데스크톱 회색영역 비율 조정 (70% = 높이가 너비의 70%)
+  height: 300px; // 고정 높이 설정
   max-width: 400px;
   background-color: #F2F3F5; // 회색 영역 배경색
   border-radius: 12px;
@@ -139,12 +138,12 @@
   }
 
   @media (max-width: 480px) {
-    padding-bottom: 45%; // 🔧 모바일 회색영역 비율 조정 (75% → 65%로 낮춤)
+    height: 200px; // 모바일에서는 더 작은 높이
     max-width: none;
   }
 
   @media screen and (max-width: 390px) {
-    padding-bottom: 40%; // 🔧 작은 모바일 회색영역 비율 조정 (80% → 70%로 낮춤)
+    height: 180px; // 작은 모바일에서는 더 작은 높이
   }
 }
 
@@ -175,19 +174,58 @@
   color: #6b7280;
   font-size: 0.875rem;
   font-weight: 500;
+  position: relative; // 원들의 기준점으로 설정
+  overflow: visible; // 원들이 잘리지 않도록 설정
 }
 
 .mapImage {
-  // 웹 환경: 지도 SVG가 컨테이너의 95% 크기로 표시 (5% 여백)
-  width: 95%;
-  height: 95%;
+  // 지도 SVG가 컨테이너의 90% 크기로 표시 (여백 확보)
+  width: 90%;
+  height: 90%;
   object-fit: contain; // 이미지 비율 유지하면서 컨테이너에 맞춤
   object-position: center; // 이미지를 중앙 정렬
+  display: block; // 이미지가 제대로 표시되도록 설정
+  max-width: 100%;
+  max-height: 100%;
+}
 
-  // 모바일 환경: 지도 SVG 크기를 더 작게 하여 웹과 비슷한 시각적 균형 유지
+// 지방별 원 스타일
+.regionDot {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #262E39;
+  z-index: 30;
+  transform: translate(-50%, -50%);
+
+  &:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
   @media (max-width: 480px) {
-    width: 75%; // 모바일에서는 75% 크기로 적절한 여백 제공
-    height: 75%; // 웹 대비 상대적으로 작게 표시하여 적절한 비율감 유지
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.dotCount {
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  line-height: 1;
+
+  @media (max-width: 480px) {
+    font-size: 8px;
   }
 }
 

@@ -89,31 +89,12 @@ export default function ReportPage() {
 
   // 지도에서 위치 선택 핸들러
   const handleMapLocationSelect = async (lat, lng, address) => {
-    // 주소에서 도/시/군 추출
-    const provinceMatch = address.match(/([가-힣]+도)/)
-    const cityMatch = address.match(/([가-힣]+시)/)
-    const countyMatch = address.match(/([가-힣]+군)/)
-    
-    const province = provinceMatch ? provinceMatch[1] : ''
-    const city = cityMatch ? cityMatch[1] : ''
-    const county = countyMatch ? countyMatch[1] : ''
-    
-    // 도 + 시/군 조합 (예: "전북 전주시", "경북 포항시")
-    let locationCode = ''
-    if (province && (city || county)) {
-      locationCode = `${province} ${city || county}`
-    } else if (city || county) {
-      locationCode = city || county
-    } else {
-      locationCode = 'CUSTOM'
-    }
-    
-    console.log('📍 선택된 위치:', { address, locationCode })
+    console.log('📍 선택된 위치:', { address, lat, lng })
     
     setFormData(prev => ({
       ...prev,
       location: address,
-      locationCode: locationCode,
+      locationCode: address, // 네이버 API에서 받은 주소를 그대로 사용
       latitude: lat,
       longitude: lng
     }))
