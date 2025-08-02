@@ -28,7 +28,7 @@ export async function GET(request, { params }) {
       ...(smallCategory && { smallCategory })
     })
 
-    const backendResponse = await fetch(`${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts?${queryParams}`, {
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'}/posts?${queryParams}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -102,10 +102,10 @@ export async function POST(request) {
     }
     
     console.log('📤 백엔드로 보낼 데이터:', backendData)
-    console.log('📤 백엔드 URL:', `${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts`)
+    console.log('📤 백엔드 URL:', `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'}/posts`)
 
     // 백엔드 API 호출
-    const apiUrl = `${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts`
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'}/posts`
     console.log('🌐 백엔드 API URL:', apiUrl)
     console.log('📤 백엔드로 보낼 JSON:', JSON.stringify(backendData, null, 2))
     

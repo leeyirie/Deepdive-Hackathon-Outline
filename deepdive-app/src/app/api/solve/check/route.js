@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -10,7 +12,7 @@ export async function GET(request) {
       return Response.json({ error: 'userId and postId are required' }, { status: 400 })
     }
 
-    const backendUrl = `http://13.124.229.252:8080/solve/check?userId=${userId}&postId=${postId}`
+    const backendUrl = `https://13.124.229.252:8080/solve/check?userId=${userId}&postId=${postId}`
     const response = await fetch(backendUrl, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },

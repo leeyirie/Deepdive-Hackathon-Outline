@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
     console.log('📁 파일 요청:', filePath)
     
     // 백엔드 서버에서 파일 가져오기
-    const backendUrl = `${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/uploads/${filePath}`
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'}/uploads/${filePath}`
     console.log('🔗 백엔드 파일 URL:', backendUrl)
     
     const backendResponse = await fetch(backendUrl, {

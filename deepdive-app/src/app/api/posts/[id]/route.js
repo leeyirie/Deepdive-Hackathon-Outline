@@ -26,7 +26,7 @@ export async function GET(request, { params }) {
     console.log(`🔍 Fetching post detail for ID: ${id}, User: ${userId}`)
 
     // 백엔드 API 호출 - 개별 게시글 상세 정보
-    const backendResponse = await fetch(`${process.env.API_BASE_URL || 'http://13.124.229.252:8080'}/posts/${id}?userId=${userId}`, {
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'}/posts/${id}?userId=${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -69,7 +69,7 @@ export function convertImageUrl(imageUrl) {
 export function convertImageUrlDirect(imageUrl) {
   if (!imageUrl) return imageUrl
   
-  const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://13.124.229.252:8080'
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://13.124.229.252:8080'
   
   // 배열인 경우 각 요소를 변환
   if (Array.isArray(imageUrl)) {

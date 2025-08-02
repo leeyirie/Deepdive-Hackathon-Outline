@@ -5,7 +5,13 @@ import ClientNotificationManager from '@/components/ClientNotificationManager'
 export const metadata = {
   title: 'OUTLINE - 보이지 않던 지역 이슈를 드러내다',
   description: '지역 이슈를 발견하고 공유하는 플랫폼',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({ children }) {

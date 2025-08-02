@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 export async function POST(request) {
   try {
     const { userId, postId } = await request.json()
@@ -5,7 +7,7 @@ export async function POST(request) {
     console.log('🔍 공감해요 등록 요청:', { userId, postId })
     
     // 백엔드 API 호출
-    const backendUrl = 'http://13.124.229.252:8080/likes'
+    const backendUrl = 'https://13.124.229.252:8080/likes'
     console.log('🔍 Backend URL:', backendUrl)
     
     const response = await fetch(backendUrl, {
@@ -42,7 +44,7 @@ export async function DELETE(request) {
     console.log('🔍 공감해요 취소 요청:', { userId, postId })
     
     // 백엔드 API 호출
-    const backendUrl = 'http://13.124.229.252:8080/likes'
+    const backendUrl = 'https://13.124.229.252:8080/likes'
     console.log('🔍 Backend URL:', backendUrl)
     
     const response = await fetch(backendUrl, {
