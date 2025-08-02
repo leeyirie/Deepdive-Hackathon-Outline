@@ -73,7 +73,7 @@
   transition: border-color 0.2s ease;
 
   &:focus {
-    border-color: #6366f1;
+    border-color: #393939;
   }
 
   &::placeholder {
@@ -83,7 +83,7 @@
 
 .searchButton {
   padding: 12px;
-  background: #6366f1;
+  background: #262E39;
   color: white;
   border: none;
   border-radius: 8px;
@@ -94,7 +94,7 @@
   justify-content: center;
 
   &:hover {
-    background: #5856eb;
+    background: #262E39;
   }
 }
 
@@ -137,7 +137,7 @@
   border-top: 1px solid #e5e7eb;
 
   .locationIcon {
-    color: #6366f1;
+    color: #262E39;
   }
 
   .locationText {
@@ -185,11 +185,11 @@
 }
 
 .confirmButton {
-  background: #6366f1;
+  background: #262E39;
   color: white;
 
   &:hover:not(:disabled) {
-    background: #5856eb;
+    background: #262E39;
   }
 
   &:disabled {

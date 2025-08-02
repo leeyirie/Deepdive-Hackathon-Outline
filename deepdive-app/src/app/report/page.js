@@ -166,7 +166,8 @@ export default function ReportPage() {
          title: formData.title.trim(),
          content: formData.content.trim(),
          imageUrl: imageUrls, // 배열 그대로 전송
-         locationCode: formData.locationCode,
+         locationCode: '', // 백엔드에서 자동 처리
+         regionName: formData.location, // 네이버 API에서 받은 주소 (예: "서울특별시 강남구")
          latitude: formData.latitude,
          longitude: formData.longitude,
          status: 0 // 기본 상태

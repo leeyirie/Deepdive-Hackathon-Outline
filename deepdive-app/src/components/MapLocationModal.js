@@ -7,9 +7,9 @@ import styles from './MapLocationModal.module.scss'
 export default function MapLocationModal({ onSelect, onClose }) {
   const mapRef = useRef(null)
   const naverMap = useRef(null)
+  const currentMarkerRef = useRef(null)
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [address, setAddress] = useState('')
-  const [currentMarker, setCurrentMarker] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
@@ -45,8 +45,8 @@ export default function MapLocationModal({ onSelect, onClose }) {
         setSelectedLocation({ lat, lng })
         
         // 기존 마커 제거
-        if (currentMarker) {
-          currentMarker.setMap(null)
+        if (currentMarkerRef.current) {
+          currentMarkerRef.current.setMap(null)
         }
         
         // 새 마커 생성
@@ -54,7 +54,7 @@ export default function MapLocationModal({ onSelect, onClose }) {
           position: latlng,
           map: naverMap.current
         })
-        setCurrentMarker(newMarker)
+        currentMarkerRef.current = newMarker
         
         // 좌표 → 주소 요청
         window.naver.maps.Service.reverseGeocode({
@@ -133,8 +133,8 @@ export default function MapLocationModal({ onSelect, onClose }) {
         naverMap.current.setZoom(16)
         
         // 기존 마커 제거
-        if (currentMarker) {
-          currentMarker.setMap(null)
+        if (currentMarkerRef.current) {
+          currentMarkerRef.current.setMap(null)
         }
         
         // 새 마커 생성
@@ -142,7 +142,7 @@ export default function MapLocationModal({ onSelect, onClose }) {
           position: position,
           map: naverMap.current
         })
-        setCurrentMarker(newMarker)
+        currentMarkerRef.current = newMarker
         
         // 선택된 위치 업데이트
         setSelectedLocation({ lat, lng })
@@ -183,12 +183,21 @@ export default function MapLocationModal({ onSelect, onClose }) {
     }
   }
 
+  // 모달 닫힐 때 마커 정리
+  const handleClose = () => {
+    if (currentMarkerRef.current) {
+      currentMarkerRef.current.setMap(null)
+      currentMarkerRef.current = null
+    }
+    onClose()
+  }
+
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={handleClose}>
       <div className={styles.mapModalContent} onClick={e => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h3>위치 선택</h3>
-          <button onClick={onClose}>
+          <button onClick={handleClose}>
             <Icon name="close" size={20} />
           </button>
         </div>
@@ -229,7 +238,7 @@ export default function MapLocationModal({ onSelect, onClose }) {
         )}
 
         <div className={styles.mapModalButtons}>
-          <button className={styles.cancelButton} onClick={onClose}>
+          <button className={styles.cancelButton} onClick={handleClose}>
             취소
           </button>
           <button 
