@@ -185,7 +185,7 @@ export default function ReportPage() {
          userId: parseInt(userId),
          title: formData.title.trim(),
          content: formData.content.trim(),
-         imageUrl: imageUrls.join(','), // 백엔드 API 필드명에 맞춤 (imageUrl)
+         imageUrl: imageUrls, // 배열 그대로 전송
          locationCode: formData.locationCode,
          latitude: formData.latitude,
          longitude: formData.longitude,
