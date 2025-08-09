@@ -4,9 +4,11 @@
 
 지역 정보 45% 블라인드존을 5분 내 감지·요약·확산하는 실시간 플랫폼
 
-## 🌐 서비스 접속
+## 🌐 사이트 주소 & 발표 PPT
 
-**🔗 [OUTLINE 바로가기](https://deepdive-hackathon-outline.vercel.app/)**
+- 🔗 [OUTLINE 바로가기](https://deepdive-hackathon-outline.vercel.app/)
+- 📊 [발표 PPT 보기](https://drive.google.com/file/d/1ng-Y9FDUSy0F7gfbOhPRd7LFtSJn9xcY/view)
+
 
 ## 🚀 프로젝트 개요
 
